@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+<title>{% block title %}Register Member{% endblock title %}</title>
+
+{% block content %}
+{% include 'adminHeader.html' %}
+
+<style>
+    .cross {
+        text-decoration: none;
+        color: rgb(56, 54, 54, 0.5);
+    }
+
+    .label{
+      font-family: 'Roboto';
+    }
+
+    .btn-close{
+        background: transparent;
+
+    }
+
+    .btn-close:focus {
+        outline: none;
+        box-shadow: none;
+        border: none;
+    }
+
+    .cross:hover {
+        color: rgb(36, 34, 34);
+    }
+
+    .container-fluid {
+      margin-top: 50px;
+      margin-bottom:-32%;
+    }
+
+    form {
+  margin-bottom: 72px;
+}
+
+
+</style>
+
+
+    <!-- Message from backend -->
+    {% for message in messages %}
+      {% if message.tags == 'success' or message.tags == 'error' %}
+      <center>
+        <div class="alert alert-info alert-dismissible fade show" role="alert" style="max-width: 80%; margin-top: 45px; margin-bottom: -40px; margin-left:220px;  height: 8vh; font-size: 20px; font-weight: 800;">{{message}}
+          <a href="" type="button" class="btn btn-close "  data-bs-dismiss="alert" aria-label="Close">
+            <i class="fa-solid fa-close fa-xl  cross"></i>
+        </a>
+        </div>
+      </center>
+      {% endif %}
+    {% endfor %}
+    
+    <div class="container-fluid">
+      <h1 class="label" style="margin-left:260px; margin-bottom: 25px;">USER REGISTRATION</h1>
+      <form method="POST" id="registration-form" style="margin-left:340px; min-width: 70%;">
+        {% csrf_token %}
+        <h3 class="sections">Personal Details</h3>
+        <div class="row">
+          <div class="col-lg-6">
+            {{ form.username|as_crispy_field }}
+            {% if form.username.errors %}
+                <span class="text-danger" id="usernameError">{{ form.username.errors.1 }}</span>
+            {% else %}
+                <span class="text-danger" id="usernameError"></span>
+            {% endif %}
+        </div>
+          <div class="col-lg-6">
+            {{ form.first_name|as_crispy_field }}
+            <span class="text-danger" id="firstNameError">{{ form.first_name.errors }}</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-6">
+            {{ form.last_name|as_crispy_field }}
+            <span class="text-danger" id="lastNameError">{{ form.last_name.errors }}</span>
+          </div>
+          <div class="col-lg-6">
+            {{ form.email|as_crispy_field }}
+            {% if form.email.errors %}
+                <span class="text-danger" id="emailError">{{ form.email.errors.1 }}</span>
+            {% else %}
+                <span class="text-danger" id="emailError"></span>
+            {% endif %}
+        </div>
+        </div>
+        <h3 class="sections">Department Details</h3>
+        <div class="row">
+          <div class="col-lg-6">
+            {{ form.department|as_crispy_field }}
+            <span class="text-danger" id="department-error">{{ form.department.errors }}</span>
+          </div>
+          <div class="col-lg-6">
+            {{ form.disconnect_date|as_crispy_field }}
+            <span class="text-danger" id="disconnectDateError">{{ form.disconnect_date.errors }}</span>
+          </div>
+        </div>
+        <h3 class="sections">Roles</h3>
+        <div class="row ml-5" style="margin-bottom: -18px; margin-top: -8px;">
+          <div class="col-lg-12 d-flex">
+            <div class="form-group flex-grow-1">
+              {{ form.is_strategy|as_crispy_field }}
+            </div>
+            <!-- <div class="form-group flex-grow-1">
+              {{ form.is_admin|as_crispy_field }}
+            </div> -->
+            <div class="form-group flex-grow-1">
+              {{ form.is_work_plan_manager|as_crispy_field }}
+            </div>
+            <div class="form-group flex-grow-1">
+              {{ form.is_manager|as_crispy_field }}
+            </div>
+            <div class="form-group flex-grow-1">
+              {{ form.is_director|as_crispy_field }}
+            </div>
+          </div>
+        </div>
+        <h3 class="sections">Password</h3>
+        <div class="row" style="margin-top: -8px;">
+          <div class="col-lg-6">
+            {{ form.password1|as_crispy_field }}
+            <span class="text-danger" id="password1Error">{{ form.password1.errors }}</span>
+          </div>
+          <div class="col-lg-6">
+            {{ form.password2|as_crispy_field }}
+            <span class="text-danger" id="password2Error">{{ form.password2.errors }}</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-5"></div>
+          <div class="col-lg-4">
+            <input type="submit" value="Register" class="btn btn-sm btn-info submit">
+          </div>
+          <div class="col-lg-3"></div>
+        </div>
+      </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/registration.js' %}"></script>
+
+{% include 'adminSidebar.html' %}
+
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/Register.css' %}">
+{% endblock %}

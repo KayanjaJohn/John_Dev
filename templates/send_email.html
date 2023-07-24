@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Send Email{% endblock title %}
+
+{% block content %}
+  {% include 'adminHeader.html' %}
+
+<style>
+
+    body{
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.996),rgba(255, 252, 252, 0.996), rgba(255, 252, 252, 0.996)), url(/static/img/bou3.jpg);
+      background-size: cover;
+      background-position: center;
+    }
+    .container-fluid {
+      margin-top: 62px;
+      margin-bottom:-20%;
+    }
+
+    .cross {
+        text-decoration: none;
+        color: rgb(56, 54, 54, 0.5);
+    }
+
+    .btn-close{
+        background: transparent;
+
+    }
+
+    .btn-close:focus {
+        outline: none;
+        box-shadow: none;
+        border: none;
+  }
+
+.cross:hover {
+    color: rgb(36, 34, 34);
+}
+
+form{
+  height: 65vh;
+}
+</style>
+
+{% for message in messages %}
+{% if message.tags == 'success' %}
+    <center>
+        <div class="alert alert-info alert-dismissible fade show" role="alert"
+             style="max-width: 75%; margin-left: 220px; margin-top: 45px; margin-bottom: -40px; height: 8vh; font-size: 20px; font-weight: 800;">
+            {{ message }}
+            <a href="" type="button" class="btn btn-close "  data-bs-dismiss="alert" aria-label="Close">
+              <i class="fa-solid fa-close fa-xl  cross"></i>
+          </a>
+        </div>
+    </center>
+{% endif %}
+{% endfor %}
+
+  <div class="container-fluid">
+    <form method="post" action="{% url 'send_email' %}"style="margin-left:500px;"> 
+      {% csrf_token %} 
+      <div class="mb-3">
+          <label for="exampleFormControlInput1" class="form-label">Receipt email address</label>
+          <input type="text" class="form-control" name="email" id="exampleFormControlInput1" placeholder="Receipt email address" required>
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputSubject" class="form-label">Subject</label>
+          <input type="text" class="form-control" name="subject" id="exampleInputSubject" required>
+        </div>
+        <div class="mb-3">
+          <label for="exampleFormControlTextarea1" class="form-label">Message</label>
+          <textarea class="form-control" id="exampleFormControlTextarea1" name="message" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Send</button>
+      </form>
+  </div>
+
+  {% include 'adminSidebar.html' %}
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{% static 'css/email.css' %}">
+{% endblock %}

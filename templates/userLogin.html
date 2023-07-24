@@ -1,0 +1,71 @@
+{% extends 'loginBase.html' %}
+{% load static %}
+
+{% block title %} Login {% endblock title %}
+
+{% block content %}
+
+<style>
+
+    .cross {
+        text-decoration: none;
+        color: rgb(56, 54, 54, 0.5);
+    }
+
+    .btn-close{
+        background: transparent;
+
+    }
+
+    .btn-close:focus {
+        outline: none;
+        box-shadow: none;
+        border: none;
+    }
+
+    .cross:hover {
+        color: rgb(36, 34, 34);
+    }
+
+
+</style>
+
+{% for message in messages %}
+    {% if message.tags == 'error' %}
+        <center>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert"
+                 style="max-width: 90%;  margin-top: 25px; margin-bottom: -50px; height: 8vh; font-size: 20px; font-weight: 800;">
+                {{ message }}
+                <a href="" type="button" class="btn btn-close "  data-bs-dismiss="alert" aria-label="Close">
+                    <i class="fa-solid fa-close fa-xl  cross"></i>
+                </a>
+            </div>
+        </center>
+    {% endif %}
+{% endfor %}
+<div class="container user_login_container">
+    <img src="{% static 'img/bou2.jpeg' %}" alt="bou_logo">
+    <h3>User Login</h3>
+    <form method="POST" id="login-form">
+        {% csrf_token %}
+        <label for="username" class="form-label">Username: </label>
+        <input type="text" id="username" name="username" class="form-control" style="padding: 22px;">
+        <span class="text-danger" id="usernameError">{{ form.username.errors }}</span>
+        <label for="password1" class="form-label mt-4">Password: </label>
+        <input type="password" id="password1" name="password" class="form-control" style="padding: 22px;">
+        <span class="text-danger" id="password1Error">{{ form.password1.errors }}</span>
+        <button class="btn submit mt-5" type="submit" value="Login">Login</button>
+        <!-- <input type="submit" value="Login" class="submit"> -->
+    </form>
+    
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{% static 'js/login.js' %}"></script>
+
+{% endblock content%}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}

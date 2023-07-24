@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<title>{% block title %}Settings{% endblock title %}</title>
+
+{% block content %}
+{% include 'adminHeader.html' %}
+
+<style>
+  body{
+    overflow: auto;
+
+  }
+
+  .container-fluid{
+    margin-top: 62px;
+    margin-bottom: 28%;
+  }
+
+
+    strong{
+      font-size: 25px;
+      font-family: 'Roboto';
+    }
+
+    strong:hover{
+      color: rgb(166, 76, 16);
+    }
+
+    strong:active{
+      color: rgb(16, 166, 123);
+    }
+
+    p{
+      font-size: 18px;
+      font-family:  Georgia, 'Times New Roman', Times, serif;
+      font-weight: 500;
+    }
+
+    h1{
+      font-weight: 700;
+      font-family: 'Roboto';
+    }
+
+    .settings{
+      margin-left: 300px;
+    }
+
+</style>
+
+  <div class="container-fluid">
+
+    <div class="settings">
+      <h1>Settings</h1>
+      <a href="{% url 'forgot_password' %}">
+        <i class="fa-solid fa-gear fa-lg" style="margin-left: 52px; margin-top: 32px; color: #0e0f11;"></i>
+        <strong style="margin-left: 12px;"> Password Settings </strong>
+      </a>
+        <p style="margin-left: 140px;">Use your system username to receive the password reset link in your Gmail with your registered @email.</p>
+    </div>
+
+  </div>
+
+{% include 'adminSidebar.html' %}
+{% endblock content %}

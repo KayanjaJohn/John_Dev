@@ -1,0 +1,325 @@
+{% extends 'base.html' %}
+
+{% block title %} Manager Dashboard {% endblock title%}
+
+{% block content %}
+    {% include 'header.html' %}
+    {% include 'selected_menu_and_role.html'%}
+
+    <h4>Dashboard</h4>
+    <div class="row" style="margin-bottom:-22%;">
+        <div class="col-2">
+            <h5>Template Details:</h5>
+            {% if initialTemplate and department_template_exists_in_initial_template %}
+                <div class="mt-2">
+                    <ul>
+                        <li>Status: <small style="color: green; font-weight:bolder;">{{department_template_exists_in_initial_template.template_Status}}</small></li>
+                        <li>Name: <small>{{department_template_exists_in_initial_template.template_Name}}</small></li>
+                        <li>Financial Year: <small>{{department_template_exists_in_initial_template.financial_Year_Starts|date:"Y"}}-{{department_template_exists_in_initial_template.financial_Year_Ends|date:"Y"}}</small></li>
+                    </ul>
+                </div>
+            {% else %}
+                <div class="mt-2">
+                    <ul>
+                        <li>Status: <small style="color: green; font-weight:bolder;">No Template</small></li>
+                        <li>Template Name: <small>-</small></li>
+                        <li>Financial Year: <small>-</small></li>
+                    </ul>
+                    <p>Check Previous Templates: <a href="#">Here</a></p>
+                </div>
+            {% endif %}
+            <h5>My PAR: Perspectives</h5>
+            {% for perspective in perspectives %}
+                <a href="{% url 'managerDashboard' %}?perspective={{perspective}}" style="display:block;">{{perspective}}</a>
+            {% endfor %}
+        </div>
+        <div class="col-10">
+            <div class="row mb-3">
+                <div class="dashboard_summary_items">
+                    <h6>
+                        {% if request.GET.perspective %}
+                            My PAR {{request.GET.perspective}} Perspective Information
+                        {% else %}
+                            My PAR Information
+                        {% endif %}
+                    </h6>
+                    <hr>
+                    <div class="row">
+                        <div class="col-4">{# Customer Perspective Summary #}
+                            <div class="card text-center">
+                                <div class="card-header">
+                                    Overall Summary
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-6 mb-3">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    Objectives
+                                                </div>
+                                                <div class="card-body">
+                                                    {% if request.GET.perspective %}
+                                                        {{manager_department_statistics_per_perspective.number_of_objectives}}
+                                                    {% else %}
+                                                        {{manager_department_statistics.number_of_objectives}}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    Activities
+                                                </div>
+                                                <div class="card-body">
+                                                    {% if request.GET.perspective %}
+                                                        {{manager_department_statistics_per_perspective.number_of_activities}}
+                                                    {% else %}
+                                                        {{manager_department_statistics.number_of_activities}}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                   Deliverables
+                                                </div>
+                                                <div class="card-body">
+                                                    {% if request.GET.perspective %}
+                                                        {{manager_department_statistics_per_perspective.number_of_deliverables}}
+                                                    {% else %}
+                                                        {{manager_department_statistics.number_of_deliverables}}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- <div class="col-6 mb-3">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    Assigned Deliverables
+                                                </div>
+                                                <div class="card-body">
+                                                    {% if request.GET.perspective %}
+                                                        {{department_statistics_per_perspective.number_of_assigned_deliverables}}
+                                                    {% else %}
+                                                        {{department_statistics.number_of_assigned_deliverables}}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">{# Activities SUMMARY #}
+                            <div class="card text-center">
+                                <div class="card-header">
+                                    Activities Status
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-6 mb-3">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    Pending
+                                                </div>
+                                                <div class="card-body">
+                                                    {% if request.GET.perspective %}
+                                                        {{manager_department_statistics_per_perspective.number_of_pending_activities}}
+                                                    {% else %}
+                                                        {{manager_department_statistics.number_of_pending_activities}}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    In Progress
+                                                </div>
+                                                <div class="card-body">
+                                                    {% if request.GET.perspective %}
+                                                        {{manager_department_statistics_per_perspective.number_of_in_progress_activities}}
+                                                    {% else %}
+                                                        {{manager_department_statistics.number_of_in_progress_activities}}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    Completed
+                                                </div>
+                                                <div class="card-body">
+                                                    {% if request.GET.perspective %}
+                                                        {{manager_department_statistics_per_perspective.number_of_in_progress_activities}}
+                                                    {% else %}
+                                                        {{manager_department_statistics.number_of_in_progress_activities}}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">{# DELIVERABLES SUMMARY #}
+                            <div class="card text-center">
+                                <div class="card-header">
+                                    Deliverables Status
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-6 mb-3">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    Pending
+                                                </div>
+                                                <div class="card-body">
+                                                    {% if request.GET.perspective %}
+                                                        {{manager_department_statistics_per_perspective.number_of_pending_deliverables}}
+                                                    {% else %}
+                                                        {{manager_department_statistics.number_of_pending_deliverables}}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    In Progress
+                                                </div>
+                                                <div class="card-body">
+                                                    {% if request.GET.perspective %}
+                                                        {{manager_department_statistics_per_perspective.number_of_in_progress_deliverables}}
+                                                    {% else %}
+                                                        {{manager_department_statistics.number_of_in_progress_deliverables}}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    Done
+                                                </div>
+                                                <div class="card-body">
+                                                    {% if request.GET.perspective %}
+                                                        {{manager_department_statistics_per_perspective.number_of_completed_deliverables}}
+                                                    {% else %}
+                                                        {{manager_department_statistics.number_of_completed_deliverables}}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="manager_charts">
+                    <h6>
+                        <!-- {% if request.GET.perspective %}
+                            {{request.GET.perspective}} Perspective Charts
+                        {% else %}
+                            Overall Department Charts
+                        {% endif %} -->
+                        My PAR Statistical Data
+                    </h6>
+                    <hr>
+                    <div class="row">
+                        <div class="col-4">
+                            <small>Summary</small>
+                            <div>
+                                <canvas id="myChart"></canvas>
+                            </div>
+                            <script>
+                                const ctx = document.getElementById('myChart');
+    
+                                new Chart(ctx, {
+                                    type: 'bar',
+                                    data: {
+                                        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                                        datasets: [{
+                                            label: '# of Votes',
+                                            data: [12, 19, 3, 5, 2, 3],
+                                            borderWidth: 1
+                                        }]
+                                    },
+                                    options: {
+                                        scales: {
+                                            y: {
+                                                beginAtZero: true
+                                            }
+                                        }
+                                    }
+                                });
+                            </script>
+                        </div>
+                        <div class="col-4">
+                            <small>Activity Status</small>
+                            <div>
+                                <canvas id="myChart2"></canvas>
+                            </div>
+                            <script>
+                                const ctx2 = document.getElementById('myChart2');
+    
+                                new Chart(ctx2, {
+                                    type: 'line',
+                                    data: {
+                                        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                                        datasets: [{
+                                            label: '# of Votes',
+                                            data: [12, 19, 3, 5, 2, 3],
+                                            borderWidth: 1
+                                        }]
+                                    },
+                                    options: {
+                                        scales: {
+                                            y: {
+                                                beginAtZero: true
+                                            }
+                                        }
+                                    }
+                                });
+                            </script>
+                        </div>
+                        <div class="col-4">
+                            <small>Deliverables Status</small>
+                            <div>
+                                <canvas id="myChart3"></canvas>
+                            </div>
+                            <script>
+                                const ctx3 = document.getElementById('myChart3');
+    
+                                new Chart(ctx3, {
+                                    type: 'bar',
+                                    data: {
+                                        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                                        datasets: [{
+                                            label: '# of Votes',
+                                            data: [12, 19, 3, 5, 2, 3],
+                                            borderWidth: 1
+                                        }]
+                                    },
+                                    options: {
+                                        scales: {
+                                            y: {
+                                                beginAtZero: true
+                                            }
+                                        }
+                                    }
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

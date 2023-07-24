@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<title>{% block title %}Admin Dashboard{% endblock title %}</title>
+
+{% block content %}
+{% include 'adminHeader.html' %}
+
+<div class="container-fluid">
+  <div class="row justify-content-center canvas">
+    <div class="col-lg-9">
+        <div class="row">
+          <div class="col-lg-4 mb-4">
+            <div class="card">
+              <div class="card-header">Registered Users</div>
+              <div class="card-body">
+                <p class="card-text">{{ user_count }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 mb-4">
+            <div class="card">
+              <div class="card-header">Number of Departments</div>
+              <div class="card-body">
+                <p class="card-text">{{ department_count }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 mb-4">
+            <div class="card">
+              <div class="card-header">Number of Active Users</div>
+              <div class="card-body">
+                <p class="card-text">{{ active_user_count }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col-lg-4"></div>
+          <div class="col-lg-4">
+            <div class="card ">
+              <div class="card-header">Number of Blocked Users</div>
+              <div class="card-body">
+                <p class="card-text">{{ blocked_user_count }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+      <div class="row mt-4">
+        <hr style="background-color: #722e2e;">
+        <div class="col-5">
+            <small style="font-size: 16px; font-weight: 600; font-family: Arial;">Illustrations</small>
+            <div>
+              <canvas id="Summary" height="280" width="500"></canvas>
+            </div>
+            <script>
+              const ctx = document.getElementById('Summary');
+          
+              new Chart(ctx, {
+                type: 'bar',
+                data: {
+                  labels: ['Registered Users', 'Active Users', 'Blocked Users'],
+                  datasets: [{
+                    label: '# of Users',
+                    data: [
+                      {{ user_count }},
+                      {{ active_user_count }},
+                      {{ blocked_user_count }}
+                    ],
+                    backgroundColor: [
+                      'rgba(255, 99, 132, 0.5)',
+                      'rgba(54, 162, 235, 0.5)',
+                      'rgba(255, 206, 86, 0.5)'
+                    ],
+                    borderColor: [
+                      'rgba(255, 99, 132, 1)',
+                      'rgba(54, 162, 235, 1)',
+                      'rgba(255, 206, 86, 1)'
+                    ],
+                    borderWidth: 1
+                  }]
+                },
+                options: {
+                  scales: {
+                    y: {
+                      beginAtZero: true
+                    }
+                  }
+                }
+              });
+            </script>
+          </div>
+          
+        <div class="col-7">
+          <canvas id="roleChart" aria-label="chart" height="240" width="540"></canvas>
+          <script>
+            var roleChart = document.getElementById("roleChart").getContext("2d");
+            new Chart(roleChart, {
+              type: 'pie',
+              data: {
+                labels: ['Strategy', 'Director', 'Work Plan Manager', 'Manager'],
+                datasets: [{
+                  label: 'Number of Users',
+                  data: [
+                    {{ role_counts.Strategy }},
+                    {{ role_counts.Director }},
+                    {{ role_counts.work_plan_manager }},
+                    {{ role_counts.Manager }}
+                  ],
+                  backgroundColor: ['yellow', 'aqua', 'pink', 'lightgreen'],
+                  hoverOffset: 5
+                }]
+              },
+              options: {
+                responsive: false,
+              },
+            });
+          </script>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include 'adminSidebar.html' %}
+
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="{% static 'css/Register.css' %}">
+<style>
+  .container-fluid {
+    margin-top: 65px;
+    /* margin-bottom:-22%; */
+  }
+
+  .canvas{
+    margin-left: 120px;
+  }
+
+  .card{
+    text-align: center;
+    font-weight: 700;
+    box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.2);
+  }
+  .card-header{
+    color: #722e2e;
+    font-size: 18px;
+  }
+</style>
+{% endblock %}

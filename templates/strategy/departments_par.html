@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %} Strategy | Departments PAR {% endblock title%}
+
+{% block content %}
+    {% include 'header.html' %}
+    {% include 'selected_menu_and_role.html'%}
+    <div class="row p-3">
+        <div class="col-2 strategy_dashboard_sidebar">
+            <div class="row ">
+                <div class="col-12 p-3">
+                    <h4>Template Details:</h4>
+                    {% if initialTemplate %}
+                        <ul>
+                            <li>Status: <small style="color: green; font-weight:bolder;">{{initialTemplate.template_Status}}</small></li>
+                            <li>Name: <small>{{initialTemplate.template_Name}}</small></li>
+                            <li>Financial Year: <small>{{initialTemplate.financial_Year_Starts|date:"Y"}}-{{initialTemplate.financial_Year_Ends|date:"Y"}}</small></li>
+                        </ul>
+                    {% else %}
+                        <p>No Open Template</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <h4>Departments</h4>
+                    <div class="departments">
+                        {% for department in departments %}
+                            <a href="{% url 'departments_par' %}?menu=Departments+PAR&department={{department}}&item=par">{{ department }}</a>
+                        {% empty %}
+                            <p>No Departments</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-10 p-4 strategy_par_info">
+            <h4>
+                {% if request.GET.department %}
+                    {{request.GET.department}} PAR
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <button type="submit" name="download_filed" class="btn btn-sm btn-success" style="display: inline;">Download</button>
+                    </form>
+                {% else %}
+                    Overall PAR Summary for all Departments
+                {% endif %}
+            </h4>
+            {% if request.GET.department %}
+                {% if initialTemplate and  department_template_exists_in_initial_template %}
+                    {% for perspective in perspectives %}
+                        <h5>{{perspective}}</h5>
+                        <hr>
+                        {% if perspective in perspectives_in_objectives_list %}
+                            <h6>Section: Scorecard</h6>
+                            {% include 'strategy/awp_par_sc_table.html' %}
+                            <h6>Section: Work Plan</h6>
+                            {% include 'strategy/awp_par_wp_table.html' %}
+                            <hr class="my-5 separator">
+                        {% else %}
+                            <p>No objectives</p>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <p>No Open Template</p>
+                {% endif %}
+            {% else %}
+                <h6>Section: Scorecard</h6>
+                <hr>
+                {% include 'strategy/awp_par_sc_table.html' %}
+                <hr class="my-5 separator">
+                <h6>Section: Work plan</h6>
+                {% include 'strategy/awp_par_wp_table.html' %}
+                <hr class="my-5 separator">
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}

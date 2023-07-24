@@ -1,0 +1,37 @@
+{% load static %}
+<div class="header py-3 mb-5">
+    <div class="logo">
+        <img src="{% static 'img/BOU_Logo.png' %}" alt="bou_logo">
+    </div>
+    <div class="main_nav">
+        {% if request.user.is_work_plan_manager %}
+            <a href="{% url 'workPlanManagerDashboard' %}?menu=Dashboard" class="{% if menu == 'Dashboard' %} active {% endif%}">Dashboard</a>
+        {% elif request.user.is_director %}
+            <a href="{% url 'workPlanManagerDashboard' %}?menu=Dashboard" class="{% if menu == 'Dashboard' %} active {% endif%}">Dashboard</a>
+        {% elif request.user.is_manager %}
+            <a href="{% url 'managerDashboard' %}?menu=Dashboard" class="{% if menu == 'Dashboard' %} active {% endif%}">Dashboard</a>
+        {% elif request.user.is_strategy %}
+            <a href="{% url 'strategyDashboard' %}?menu=Dashboard" class="{% if menu == 'Dashboard' %} active {% endif%}">Dashboard</a>
+        {% elif request.user.is_manager %}
+            <a href="{% url 'managerDashboard' %}?menu=Dashboard" class="{% if menu == 'Dashboard' %} active {% endif%}">Dashboard</a>
+        {% else %}
+            <a href="{% url  'adminDashboard' %}" class="{% if menu == 'Dashboard' %} active {% endif%}">Dashboard</a>
+        {% endif %}
+        {% if request.user.is_strategy %}
+            <a href="{% url 'departments_awp' %}?menu=Departments+AWP" class="{% if menu == 'Departments AWP'%}active{%endif %}">Departments AWP</a>
+            <a href="{% url 'departments_par' %}?menu=Departments+PAR&item=par" class="{% if menu == 'Departments PAR' and item == 'par' %}par_active{%endif %}">Departments PAR</a>
+            <a href="{% url 'templates' %}?menu=Templates" class="{% if menu == 'Templates'%}par_active{%endif %}">Templates</a>
+        {% else %}
+        <a href="{% url 'awp' %}?menu=Annual+Work+Plan" class="{% if menu == 'Annual Work Plan'%}active{%endif %}">Annual Work Plan</a>
+        <a href="{% url 'par' %}?menu=Performance+Assessment+Report" class="{% if menu == 'Performance Assessment Report' %}par_active{% endif %}">Performance Assessment Report</a>
+        <a href="{% url 'my_par' %}?menu=My+Par&category=only_my_par" class="{% if menu == 'My Par' %}par_active{% endif %}">My Par</a>
+        {% endif %}
+        <a href="{% url 'settings' %}" class="{% if menu == 'Settings' %} active {% endif%}">Settings</a>
+    </div>
+    <div class="user_details">
+        <span>{{ request.user }}</span>
+        <span>
+            <a href="{% url 'userLogout' %}">Logout</a>
+        </span>
+    </div>
+</div>

@@ -1,0 +1,34 @@
+{% load static %}
+{% if menu != 'My Par' %}
+    <div class="awp-item" id="{% if menu == 'Performance Assessment Report'%}par_active{% else %}scorecard{% endif %}">
+        Perspectives
+        <i class="fa-sharp fa-solid fa-circle-chevron-down"></i>
+    </div>
+    <div class="sc_perspectives_on" id="sc_dropdown">
+        <a href="{% if menu == 'Performance Assessment Report'%} {% url 'par_sc_Customer'%}?perspective=Customer&item=par&menu=Performance+Assessment+Report&section=scorecard {% else %} {% url 'awp_sc_Customer' %}?perspective=Customer&menu=Annual+Work+Plan&section=scorecard {%endif%}" class="{% if perspective == 'Customer' and menu == 'Annual Work Plan' and section == 'scorecard' %}active{% elif perspective == 'Customer' and menu == 'Performance Assessment Report' and section == 'scorecard' %}par_active{% endif %}">Customer</a>
+        <a id="sc_finance" href="{% if menu == 'Performance Assessment Report'%} {% url 'par_sc_Finance'%}?perspective=Finance&item=par&menu=Performance+Assessment+Report&section=scorecard  {% else %} {% url 'awp_sc_Finance' %}?perspective=Finance&menu=Annual+Work+Plan&section=scorecard {%endif%}" class="{% if perspective == 'Finance' and menu == 'Annual Work Plan' and section == 'scorecard'%}active{% elif perspective == 'Finance' and menu == 'Performance Assessment Report' and section == 'scorecard' %}par_active{% endif %}">Finance</a>
+        <a id="sc_ibp" href="{% if menu == 'Performance Assessment Report'%} {% url 'par_sc_InternalBusinessProcesses'%}?perspective=Internal+Business+Processes&item=par&menu=Performance+Assessment+Report&section=scorecard  {% else %} {% url 'awp_sc_InternalBusinessProcesses' %}?perspective=Internal%20Business%20Processes&menu=Annual+Work+Plan&section=scorecard {%endif%}" class="{% if perspective == 'Internal Business Processes' and menu == 'Annual Work Plan' and section == 'scorecard'%}active{% elif perspective == 'Internal Business Processes' and menu == 'Performance Assessment Report' and section == 'scorecard' %}par_active{% endif %}">Internal Business Processes</a>
+        <a href="{% if menu == 'Performance Assessment Report'%} {% url 'par_sc_OrganizationalCapacity'%}?perspective=Organizational+Capacity&item=par&menu=Performance+Assessment+Report&section=scorecard  {% else %} {% url 'awp_sc_OrganizationalCapacity' %}?perspective=Organizational%20Capacity&menu=Annual+Work+Plan&section=scorecard {%endif%}" class="{% if perspective == 'Organizational Capacity' and menu == 'Annual Work Plan' and section == 'scorecard'%}active{% elif perspective == 'Organizational Capacity' and menu == 'Performance Assessment Report' and section == 'scorecard' %}par_active{% endif %}">Organizational Capacity</a>
+    </div>
+    <!-- <div class="awp-item" id="annual_workplan">
+        Annual Workplan
+        <i class="fa-sharp fa-solid fa-circle-chevron-down"></i>
+    </div>
+    <div class="awp_perspectives_on" id="awp_dropdown">
+        <a href="{%if menu == 'Performance Assessment Report'%}{% url 'par_wp_Customer'%}?perspective=Customer&item=par&menu=Performance+Assessment+Report&section=Work+Plan{%else%}{% url 'awp_wp_Customer' %}?perspective=Customer&section=Work+Plan&menu=Annual+Work+Plan {% endif %}" class="{% if perspective == 'Customer' and section == 'Work Plan' and menu == 'Annual Work Plan'%}active{% elif perspective == 'Customer' and section == 'Work Plan' and menu == 'Performance Assessment Report'%}par_active{% endif %}">Customer</a>
+        <a href="{%if menu == 'Performance Assessment Report'%} {% url 'par_wp_Finance'%}?perspective=Finance&item=par&menu=Performance+Assessment+Report&section=Work+Plan {% else %} {% url 'awp_wp_Finance' %}?perspective=Finance&section=Work+Plan&menu=Annual+Work+Plan {%endif%}" class="{% if perspective == 'Finance' and section == 'Work Plan' and menu == 'Annual Work Plan'%}active{% elif perspective == 'Finance' and section == 'Work Plan' and menu == 'Performance Assessment Report' %}par_active{% endif %}">Finance</a>
+        <a href="{%if menu == 'Performance Assessment Report'%} {% url 'par_wp_InternalBusinessProcesses'%}?perspective=Internal+Business+Processes&item=par&menu=Performance+Assessment+Report&section=Work+Plan {% else %} {% url 'awp_wp_InternalBusinessProcesses' %}?perspective=Internal+Business+Processes&section=Work+Plan&menu=Annual+Work+Plan {%endif%}" class="{% if perspective == 'Internal Business Processes' and section == 'Work Plan' and menu == 'Annual Work Plan'%}active{% elif perspective == 'Internal Business Processes' and section == 'Work Plan' and menu == 'Performance Assessment Report' %}par_active{% endif %}">Internal Business Processes</a>
+        <a href="{%if menu == 'Performance Assessment Report'%} {% url 'par_wp_OrganizationalCapacity'%}?perspective=Organizational+Capacity&item=par&menu=Performance+Assessment+Report&section=Work+Plan {% else %} {% url 'awp_wp_OrganizationalCapacity' %}?perspective=Organizational+Capacity&section=Work+Plan&menu=Annual+Work+Plan {%endif%}" class="{% if perspective == 'Organizational Capacity' and section == 'Work Plan' and menu == 'Annual Work Plan'%}active{% elif perspective == 'Organizational Capacity' and section == 'Work Plan' and menu == 'Performance Assessment Report' %}par_active{% endif %}">Organizational Capacity</a>
+    </div> -->
+{% else %}
+    <div class="awp-item" id="annual_workplan">
+        Perspectives
+        <i class="fa-sharp fa-solid fa-circle-chevron-down"></i>
+    </div>
+    <div class="awp_perspectives_on" id="awp_dropdown">
+        <a href="{% url 'my_par_customer'%}?perspective=Customer&menu=My+Par" class="{% if perspective == 'Customer' and menu == 'My Par'%}par_active{% endif %}">Customer</a>
+        <a href="{% url 'my_par_finance'%}?perspective=Finance&menu=My+Par" class="{% if perspective == 'Finance' and menu == 'My Par'%}par_active{% endif %}">Finance</a>
+        <a href="{% url 'my_par_internal_business_processes'%}?perspective=Internal+Business+Processes&menu=My+Par" class="{% if perspective == 'Internal Business Processes' and menu == 'My Par'%}par_active{% endif %}">Internal Business Processes</a>
+        <a href="{% url 'my_par_organizational_capacity'%}?perspective=Organizational+Capacity&menu=My+Par" class="{% if perspective == 'Organizational Capacity' and menu == 'My Par'%}par_active{% endif %}">Organizational Capacity</a>
+    </div>
+{% endif %}

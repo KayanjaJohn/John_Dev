@@ -1,0 +1,28 @@
+.label {
+  text-align: center;
+  margin-top: 10px;
+  font-weight: 800;
+  font-family: 'Roboto';
+  text-shadow: 2px 2px 4px rgb(90, 12, 8, 0.3), -2px -2px 4px rgb(255, 255, 255, 0.4);
+}
+
+.container-fluid{
+  margin-top: 92px;
+}
+
+strong{
+font-size: 18px;
+}
+
+a:hover{
+text-decoration: none;
+}
+
+
+button:focus{
+outline:none;
+}
+
+button::after{
+outline:none;
+}

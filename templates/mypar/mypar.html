@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Scorecard {% endblock title%}
+
+{% block content %}
+    {% include 'header.html' %}
+    {% include 'selected_menu_and_role.html'%}
+    <div class="container-fluid" style="margin-bottom: 40px;">
+        <div class="row gx-1">
+            <div class="sidebar col-md-2 p-4">
+              {% include 'sidebar.html' %}
+            </div>
+            <div class="main col-md-10 p-4">
+                <h5>My Par</h5>
+                {% for departmentPerspective in departmentPerspectives %}
+                    {% include 'mypar/my_par_table.html'%}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}

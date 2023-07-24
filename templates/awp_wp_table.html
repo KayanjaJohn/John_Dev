@@ -1,0 +1,471 @@
+{% load crispy_forms_tags %}
+<div class="container-fluid">
+    {% if initialTemplate %}
+    <!-- <p>Template Present</p> -->
+        {% if department_template_exists_in_initial_template %}
+            <!-- <p>Department Template Exists</p> -->
+            <table class="table table-bordered awp_sc_table" id="{% if request.GET.item%}par{% endif%}">
+                <thead>
+                    <tr>
+                        <th scope="col">Departmental Initiative/Activities</th>
+                        <th>Deliverables</th>
+                        {% if request.GET.item != 'par' %}
+                            <th scope="col">DPI, CSI, BAU</th>
+                        {% endif %}
+                        <th scope="col">Budget Allocation</th>
+                        {% if request.GET.item %}
+                            <th scope="col">Actual Expenditure</th>
+                        {% endif %}
+                        {% if request.GET.item %}
+                            <th scope="col">Lead Person</th>
+                        {% endif %}
+                        {% if request.GET.item %}
+                            <th scope="col">Achievements</th>
+                        {% endif %}
+                        <th scope="col">Start - End Dates</th>
+                        {% if request.GET.item %}
+                            <th scope="col">Challenges (Reasons for Deviation)</th>
+                        {% endif %}
+                        {% if request.GET.item != 'par' %}
+                            <th scope="col">Lead Person</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for departmentalObjective in departmentalObjectives %}
+                        <tr>
+                            <!-- DEPARTMENTAL ACTIVITIES -->
+                            <td>
+                                {% for strategicResult in strategicResults %}
+                                    {% if strategicResult.departmental_objective == departmentalObjective %}
+                                        {% for performanceMeasure in performanceMeasures %}
+                                            {% if performanceMeasure.strategic_result == strategicResult %}
+                                                <small class="depend">{{performanceMeasure}}</small>
+                                                {% for departmentalInitiativeOrActivity in departmentalInitiativesOrActivities %}
+                                                    {% if departmentalInitiativeOrActivity.performance_measure == performanceMeasure %}
+                                                        <p>
+                                                            - {{ departmentalInitiativeOrActivity }}
+                                                            {% if request.GET.item != 'par' %}
+                                                                {% if request.user.is_work_plan_manager or request.user.is_director %}
+                                                                    {% if department_template_exists_in_initial_template.template_Status == 'in progress' %}
+                                                                        <i class="fa-solid fa-pen fa-xs" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#departmentalInitiativeOrActivity_update_{{ departmentalInitiativeOrActivity.id }}"></i>
+                                                                        <div class="modal fade" id="departmentalInitiativeOrActivity_update_{{ departmentalInitiativeOrActivity.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                                            <div class="modal-dialog modal-lg">
+                                                                                <div class="modal-content">
+                                                                                    <div class="modal-header">
+                                                                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Departmental Initiative</h1>
+                                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                                    </div>
+                                                                                    <div class="modal-body">
+                                                                                        <h6>Perspective: {{ request.GET.perspective }}</h6>
+                                                                                        <p>Performance Measure: {{ performanceMeasure }}</p>
+                                                                                        <h5>Edit Departmental Activity:</h5>
+                                                                                        <form action="" method="POST">
+                                                                                        {% csrf_token %}
+                                                                                        <input type="hidden" name="departmentalInitiativeOrActivity" value="{{ departmentalInitiativeOrActivity.id }}">
+                                                                                        <label class="form-label" for="departmental_activity">Departmental Initiative</label>
+                                                                                        <input class="form-control" type="text" id="departmental_activity" name="departmental_Initiative" value="{{ departmentalInitiativeOrActivity}}">
+                                                                                        <label class="form-label" for="DPI_CSI_BAU">DPI,CSI,BAU</label>
+                                                                                        <select class="form-select" name="DPI_CSI_BAU" id="DPI_CSI_BAU">
+                                                                                            {% if departmentalInitiativeOrActivity.DPI_CSI_BAU == 'DPI' %}
+                                                                                                <option value="DPI" selected>{{departmentalInitiativeOrActivity.DPI_CSI_BAU}}</option>
+                                                                                                <option value="CSI">CSI</option>
+                                                                                                <option value="BAU">BAU</option>
+                                                                                            {% endif  %}
+                                                                                            {% if departmentalInitiativeOrActivity.DPI_CSI_BAU == 'CSI' %}
+                                                                                                <option value="CSI" selected>{{departmentalInitiativeOrActivity.DPI_CSI_BAU}}</option>
+                                                                                                <option value="DPI">DPI</option>
+                                                                                                <option value="BAU">BAU</option>
+                                                                                            {% endif  %}
+                                                                                            {% if departmentalInitiativeOrActivity.DPI_CSI_BAU == 'BAU' %}
+                                                                                                <option value="BAU" selected>{{departmentalInitiativeOrActivity.DPI_CSI_BAU}}</option>
+                                                                                                <option value="DPI">DPI</option>
+                                                                                                <option value="CSI">CSI</option>
+                                                                                            {% endif  %}
+                                                                                            
+                                                                                        </select>
+                                                                                        <label class="form-label" for="budget_allocation">Budget Allocation</label>
+                                                                                        <input class="form-control" type="text" id="budget_allocation" name="budget_allocation" value="{{ departmentalInitiativeOrActivity.budget_allocation }}">
+                                                                                        <!-- <input type="text" name="" value=""> -->
+                                                                                        <button type="submit" name="departmentalInitiativeOrActivityUpdateBtn" value="departmentalInitiativeOrActivityUpdate"
+                                                                                        class="btn btn-sm btn-primary mt-2">Update</button>
+                                                                                        </form>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    {% endif %}
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        </p>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% if request.GET.item != 'par' %}
+                                                    {% if request.user.is_work_plan_manager or request.user.is_director %}
+                                                        {% if department_template_exists_in_initial_template.template_Status == 'in progress' %}
+                                                            <small style="text-decoration: none; display: block; color: gray;"><i>Add activity</i></small>
+                                                            <button style="border: 0px" data-bs-toggle="modal" data-bs-target="#performanceMeasure_wp_{{ performanceMeasure.id }}"><i class="fa-solid fa-square-plus fa-lg"></i></button>
+                                                            <div class="modal fade" id="performanceMeasure_wp_{{ performanceMeasure.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                                <div class="modal-dialog modal-lg">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Departmental Activity | {{ request.GET.perspective}}</h1>
+                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <h6>Perspective: {{ request.GET.perspective }}</h6>
+                                                                            <p>Performance Measure: {{ performanceMeasure }}</p>
+                                                                            <h5>Departmental Initiative/Activities</h5>
+                                                                            <form action="" method="POST">
+                                                                            {% csrf_token %}
+                                                                            <input type="hidden" name="performanceMeasure" value="{{ performanceMeasure.id }}">
+                                                                            {{ departmentalActivitiesForm|crispy }}
+                                                                            <button class="btn btn-small btn-primary" name="departmentalInitiativeBtn" value="departmentalInitiative" type="submit">Add</button>
+                                                                            </form>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        {% else %}
+                                                            <small style="display: block; color: rgb(212, 55, 55);">Template: Closed.</small>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                            <!-- DELIVERABLES -->
+                            <td>
+                                {% for strategicResult in strategicResults %}
+                                    {% if strategicResult.departmental_objective == departmentalObjective %}
+                                        {% for performanceMeasure in performanceMeasures%}
+                                            {% if performanceMeasure.strategic_result == strategicResult %}
+                                                    {% for departmentalInitiativeOrActivity in departmentalInitiativesOrActivities %}
+                                                        {% if departmentalInitiativeOrActivity.performance_measure == performanceMeasure %}
+                                                            <small class="depend">{{departmentalInitiativeOrActivity}}</small>
+                                                            {% for deliverable in deliverables %}
+                                                                {% if departmentalInitiativeOrActivity == deliverable.departmentalInitiativeOrActivity %}
+                                                                    <p>
+                                                                        - {{deliverable}}
+                                                                        <!-- Add Edit Functionality Here -->
+                                                                        {% if request.GET.item != 'par' %}
+                                                                            {% if request.user.is_work_plan_manager or request.user.is_director %}
+                                                                                {% if department_template_exists_in_initial_template.template_Status == 'in progress' %}
+                                                                                    <i class="fa-solid fa-pen fa-xs" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#deliverable_update_{{ deliverable.id }}"></i>
+                                                                                    <div class="modal fade" id="deliverable_update_{{ deliverable.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                                                    <div class="modal-dialog modal-lg">
+                                                                                        <div class="modal-content">
+                                                                                            <div class="modal-header">
+                                                                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Deliverable</h1>
+                                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                                            </div>
+                                                                                            <div class="modal-body">
+                                                                                                <h6>Perspective: {{ request.GET.perspective }}</h6>
+                                                                                                <p>Departmental Initiative: {{ deliverable.departmentalInitiativeOrActivity }}</p>
+                                                                                                <h5>Edit Deliverable:</h5>
+                                                                                                <form action="" method="POST">
+                                                                                                {% csrf_token %}
+                                                                                                <input type="hidden" name="deliverable_id" value="{{ deliverable.id }}">
+                                                                                                <label class="form-label" for="deliverable_update">Deliverable:</label>
+                                                                                                <input class="form-control" type="text" id="deliverable_update" name="deliverable" value="{{ deliverable}}">
+                                                                                                <label class="form-label" for="start_date_update">Start Date:</label>
+                                                                                                <input class="form-control" id="start_date_update" name="start_date" value="{{ deliverable.start_date }}">
+                                                                                                <label class="form-label" for="end_date_update">End Date:</label>
+                                                                                                <input class="form-control" id="end_date_update" name="end_date" value="{{ deliverable.end_date }}">
+                                                                                                <label class="form-label" for="lead_person_update">Lead Person:</label>
+                                                                                                <select name="lead_person" class="form-select">
+                                                                                                    {% for departmentUser in departmentUsers %}
+                                                                                                        {% if departmentUser == deliverable.lead_person %}
+                                                                                                            <option value="{{ departmentUser }}" selected>{{departmentUser}}</option>
+                                                                                                        {% else %}
+                                                                                                            <option value="{{ departmentUser }} ">{{departmentUser}}</option>
+                                                                                                        {% endif %}
+                                                                                                    {% endfor %}
+                                                                                                </select>
+                                                                                                <button type="submit" name="deliverableUpdateBtn" value="deliverableUpdate"
+                                                                                                class="btn btn-sm btn-primary mt-2">Update</button>
+                                                                                                </form>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    </div>
+                                                                                {% endif %}
+                                                                            {% endif %}
+                                                                        {% endif %}
+                                                                    </p>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                            {% if request.GET.item != 'par' %}
+                                                                {% if request.user.is_work_plan_manager or request.user.is_director %}
+                                                                    {% if department_template_exists_in_initial_template.template_Status == 'in progress' %}
+                                                                        <small style="text-decoration: none; display: block; color: gray;"><i>Add deliverables</i></small>
+                                                                        <button style="border: 0px" data-bs-toggle="modal" data-bs-target="#deliverables_wp_{{ departmentalInitiativeOrActivity.id }}"><i class="fa-solid fa-square-plus fa-lg"></i></button>
+                                                                        <div class="modal fade" id="deliverables_wp_{{ departmentalInitiativeOrActivity.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                                            <div class="modal-dialog modal-lg">
+                                                                                <div class="modal-content">
+                                                                                    <div class="modal-header">
+                                                                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Deliverables | {{request.GET.perspective}}</h1>
+                                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                                    </div>
+                                                                                    <div class="modal-body">
+                                                                                        <h6>Perspective: {{ request.GET.perspective }}</h6>
+                                                                                        <p>Departmental Initiative: {{ departmentalInitiativeOrActivity }}</p>
+                                                                                        <h5>Deliverables</h5>
+                                                                                        <form action="" method="POST">
+                                                                                        {% csrf_token %}
+                                                                                        <input type="hidden" name="departmentalInitiativeOrActivity" value="{{ departmentalInitiativeOrActivity.id }}">
+                                                                                        {{ deliverablesForm|crispy }}
+                                                                                        <p>
+                                                                                            <label for="lead_person" class="form-label">Lead Person:</label>
+                                                                                            <select name="lead_person" id="lead_person" class="form-select">
+                                                                                                <option selected value="Not Assigned">Select Lead Person</option>
+                                                                                                {% for departmentUser in departmentUsers %}
+                                                                                                <option value="{{ departmentUser }}">{{ departmentUser }}</option>
+                                                                                                {% endfor %}
+                                                                                            </select>
+                                                                                        </p>
+                                                                                        <button class="btn btn-small btn-primary" name="deliverablesBtn" value="deliverables" type="submit">Add</button>
+                                                                                        </form>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    {% endif %}
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                            {% if request.GET.item != "par" %}
+                                <td>
+                                    {% for strategicResult in strategicResults %}
+                                        {% if strategicResult.departmental_objective == departmentalObjective %}
+                                            {% for performanceMeasure in performanceMeasures%}
+                                                {% if performanceMeasure.strategic_result == strategicResult %}
+                                                    {% for departmentalInitiativeOrActivity in departmentalInitiativesOrActivities %}
+                                                        {% if departmentalInitiativeOrActivity.performance_measure == performanceMeasure %}
+                                                            <small class="depend">{{departmentalInitiativeOrActivity}}</small>
+                                                            <p>- {{ departmentalInitiativeOrActivity.DPI_CSI_BAU }}</p>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                            {% endif %}
+                            <td>
+                                {% for strategicResult in strategicResults %}
+                                    {% if strategicResult.departmental_objective == departmentalObjective %}
+                                        {% for performanceMeasure in performanceMeasures%}
+                                            {% if performanceMeasure.strategic_result == strategicResult %}
+                                                {% for departmentalInitiativeOrActivity in departmentalInitiativesOrActivities %}
+                                                    {% if departmentalInitiativeOrActivity.performance_measure == performanceMeasure %}
+                                                        <small class="depend">{{departmentalInitiativeOrActivity}}</small>
+                                                        <p> {{ departmentalInitiativeOrActivity.budget_allocation }}</p>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                            {% if request.GET.item %}
+                                <td>{# ACTUAL EXPENDITURE#}
+                                    {% for strategicResult in strategicResults %}
+                                    {% if strategicResult.departmental_objective == departmentalObjective %}
+                                        {% for performanceMeasure in performanceMeasures%}
+                                            {% if performanceMeasure.strategic_result == strategicResult %}
+                                                    {% for departmentalInitiativeOrActivity in departmentalInitiativesOrActivities %}
+                                                        {% if departmentalInitiativeOrActivity.performance_measure == performanceMeasure %}
+                                                            <small class="depend mb-2">- {{departmentalInitiativeOrActivity}}</small>
+                                                            {% for actualExpenditure in actualExpenditures %}
+                                                                {% if departmentalInitiativeOrActivity == actualExpenditure.departmentalInitiativeOrActivity %}
+                                                                    <p>{{ actualExpenditure }}</p>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                                {% if request.user.is_work_plan_manager %}
+                                                                    <small style="text-decoration: none; display: block; color: gray;"><i>Add Actual Expenditure</i></small>
+                                                                    <button style="border: 0px" data-bs-toggle="modal" data-bs-target="#actual_expenditure_wp_{{ departmentalInitiativeOrActivity.id }}"><i class="fa-solid fa-square-plus fa-lg" style="color: #7c0303;"></i></button>
+                                                                {% endif %}
+                                                        {% endif %}
+                                                        <div class="modal fade" id="actual_expenditure_wp_{{ departmentalInitiativeOrActivity.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog modal-lg">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <h6>Perspective: {{ request.GET.perspective }}</h6>
+                                                                        <p>Departmental Initiative: {{ departmentalInitiativeOrActivity }}</p>
+                                                                        <h5>Actual Expenditure</h5>
+                                                                        <form action="" method="POST">
+                                                                        {% csrf_token %}
+                                                                        <input type="hidden" name="departmentalInitiativeOrActivity" value="{{ departmentalInitiativeOrActivity.id }}">
+                                                                        {{actualExpenditureForm|crispy}}
+                                                                        <button class="btn btn-small btn-primary" name="actualExpenditureBtn" value="actualExpenditure" type="submit">Add</button>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}                    
+                                </td>
+                            {% endif %}
+                            {% if request.GET.item %}
+                                <td>
+                                    {% for strategicResult in strategicResults %}
+                                        {% if strategicResult.departmental_objective == departmentalObjective %}
+                                            {% for performanceMeasure in performanceMeasures%}
+                                                {% if performanceMeasure.strategic_result == strategicResult %}
+                                                    
+                                                        {% for departmentalInitiativeOrActivity in departmentalInitiativesOrActivities %}
+                                                            {% if departmentalInitiativeOrActivity.performance_measure == performanceMeasure %}
+                                                                {% for deliverable in deliverables %}
+                                                                    {% if departmentalInitiativeOrActivity == deliverable.departmentalInitiativeOrActivity %}
+                                                                        {% ifchanged deliverable.lead_person %}
+                                                                            <small class="depend" style="word-wrap: normal;">{{deliverable.lead_person}}</small>
+                                                                        {% endifchanged %}
+                                                                        <p>- {{deliverable}}</p>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                            {% endif %}
+                            {% if request.GET.item %} {# Achievements #}
+                                <td>
+                                    {% for strategicResult in strategicResults %}
+                                        {% if strategicResult.departmental_objective == departmentalObjective %}
+                                            {% for performanceMeasure in performanceMeasures%}
+                                                {% if performanceMeasure.strategic_result == strategicResult %}
+                                                    
+                                                        {% for departmentalInitiativeOrActivity in departmentalInitiativesOrActivities %}
+                                                            {% if departmentalInitiativeOrActivity.performance_measure == performanceMeasure %}
+                                                                {% for deliverable in deliverables %}
+                                                                    {% if departmentalInitiativeOrActivity == deliverable.departmentalInitiativeOrActivity %}
+                                                                        {% for achievement_challenge in achievements_challenges %}
+                                                                            {% if achievement_challenge.deliverable == deliverable %}
+                                                                                <small class="depend" style="word-wrap: normal;">{{deliverable}}</small>
+                                                                                <p>
+                                                                                    - {{achievement_challenge}}
+                                                                                </p>
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                            {% endif %}
+                            <td>
+                                {% for strategicResult in strategicResults %}
+                                    {% if strategicResult.departmental_objective == departmentalObjective %}
+                                        {% for performanceMeasure in performanceMeasures%}
+                                            {% if performanceMeasure.strategic_result == strategicResult %}
+                                                
+                                                    {% for departmentalInitiativeOrActivity in departmentalInitiativesOrActivities %}
+                                                        {% if departmentalInitiativeOrActivity.performance_measure == performanceMeasure %}
+                                                            {% for deliverable in deliverables %}
+                                                                {% if departmentalInitiativeOrActivity == deliverable.departmentalInitiativeOrActivity %}
+                                                                    <small class="depend" style="word-wrap: normal;">{{deliverable}}</small>
+                                                                    <p>{{deliverable.start_date}} - {{deliverable.end_date}}</p>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                            {% if request.GET.item %} {# Challenges#}
+                                <td>
+                                    {% for strategicResult in strategicResults %}
+                                        {% if strategicResult.departmental_objective == departmentalObjective %}
+                                            {% for performanceMeasure in performanceMeasures%}
+                                                {% if performanceMeasure.strategic_result == strategicResult %}
+                                                    
+                                                        {% for departmentalInitiativeOrActivity in departmentalInitiativesOrActivities %}
+                                                            {% if departmentalInitiativeOrActivity.performance_measure == performanceMeasure %}
+                                                                {% for deliverable in deliverables %}
+                                                                    {% if departmentalInitiativeOrActivity == deliverable.departmentalInitiativeOrActivity %}
+                                                                        {% for achievement_challenge in achievements_challenges %}
+                                                                            {% if achievement_challenge.deliverable == deliverable %}
+                                                                                <small class="depend" style="word-wrap: normal;">{{deliverable}}</small>
+                                                                                <p>
+                                                                                    - {{achievement_challenge.challenge}}
+                                                                                </p>
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                            {% endif %}
+                            {% if request.GET.item != 'par' %}
+                                <td>
+                                    {% for strategicResult in strategicResults %}
+                                        {% if strategicResult.departmental_objective == departmentalObjective %}
+                                            {% for performanceMeasure in performanceMeasures%}
+                                                {% if performanceMeasure.strategic_result == strategicResult %}
+                                                    
+                                                        {% for departmentalInitiativeOrActivity in departmentalInitiativesOrActivities %}
+                                                            {% if departmentalInitiativeOrActivity.performance_measure == performanceMeasure %}
+                                                                {% for deliverable in deliverables %}
+                                                                    {% if departmentalInitiativeOrActivity == deliverable.departmentalInitiativeOrActivity %}
+                                                                        {% ifchanged %}
+                                                                        <small class="depend" style="word-wrap: normal;">{{deliverable.lead_person}}</small>
+                                                                        {% endifchanged %}
+                                                                        <p>- {{deliverable}}</p>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Department Does not Template Exists</p>
+        {% endif %}
+    {% else %}
+        <p>No template</p>
+    {% endif %}
+</div>

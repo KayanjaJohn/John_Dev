@@ -1,0 +1,476 @@
+{% load crispy_forms_tags %}
+<div class="container-fluid">
+  {% if initialTemplate %}
+    <!-- <p> Template Exists </p> -->
+    <!-- TEMPLATE EXISTS -->
+    {% if department_template_exists_in_initial_template %}
+      <!-- {% comment %} TABLE STARTS HERE {% endcomment %} -->
+      <table class="table table-bordered awp_sc_table" id="{% if request.GET.item %}par{% endif %}">
+        <thead>
+          <tr>
+            <th scope="col">
+              Departmental Objectives
+              {% if request.GET.item != 'par' %}
+                {% if request.user.is_work_plan_manager %}
+                  <div style="display: flex; flex-direction: row; justify-content: space-evenly;">
+                    <button type="button" class="awp_par_add_btn btn-sm " data-bs-toggle="modal" data-bs-target="#objective_{{ request.GET.perspective }}">Add <i class="fa-light fa-plus fa-lg" style="color: #fefbfb; margin-top: 0px;"></i></button>
+                    <button type="button" class="awp_par_update_btn" data-bs-toggle="modal" data-bs-target="#updateObjective">Update</button>
+                  </div>
+                {% endif %}
+              {% endif %}
+            </th>
+            <th scope="col">
+              Strategic Result
+            </th>
+            <th scope="col">
+              Performance Measures
+            </th>
+            <th scope="col">
+              Targets (Quarterly, Annual)
+            </th>
+            {% if request.GET.item %}
+              <th scope="col">Formula</th>
+              <th scope="col">Performance Measure (Actual Results)</th>
+            {% endif %}
+            <th scope="col">
+              Corporate Strategic Initiative
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for departmentalObjective in departmentalObjectives %}
+            <tr>
+              <td>{# OBJECTIVES #}
+                <p>
+                  - {{ departmentalObjective }}
+                  {% if request.GET.item != 'par' %}
+                    {% if request.user.is_work_plan_manager or request.user.is_director %}
+                      {% if department_template_exists_in_initial_template.template_Status == 'in progress' %}
+                        <i class="fa-solid fa-pen fa-xs" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#objective_update_{{ departmentalObjective.id }}"></i><br>
+                      {% endif %}
+                    {% endif %}
+                  {% endif %}
+                  {% if forloop.last %}
+                    {% if request.GET.item != 'par' %}
+                      {% if request.user.is_work_plan_manager or request.user.is_director %}
+                        {% if department_template_exists_in_initial_template.template_Status == 'in progress' %}
+                          <small style="display: block; color: gray;">Add more objectives</small>
+                          <!-- Modals Triggers -->
+                          {% if request.GET.perspective == 'Internal Business Processes'%}
+                            <button style="border: 0px" data-bs-toggle="modal" data-bs-target="#objective_InternalBusinessProcesses"><i class="fa-solid fa-square-plus fa-lg"></i></button>
+                          {% elif request.GET.perspective == 'Organizational Capacity'%}
+                            <button style="border: 0px" data-bs-toggle="modal" data-bs-target="#objective_OrganizationalCapacity"><i class="fa-solid fa-square-plus fa-lg"></i></button>
+                          {% else %}
+                            <button style="border: 0px" data-bs-toggle="modal" data-bs-target="#objective_{{ request.GET.perspective }}"><i class="fa-solid fa-square-plus fa-lg"></i></button>
+                          {% endif %}
+                          <!-- Modals -->
+                          {% if request.GET.perspective == 'Internal Business Processes'%}
+                            <div class="modal fade" id="objective_InternalBusinessProcesses" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                          {% elif request.GET.perspective == 'Organizational Capacity' %}
+                            <div class="modal fade" id="objective_OrganizationalCapacity" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                          {% else %}
+                            <div class="modal fade" id="objective_{{ request.GET.perspective }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                          {% endif %}
+                              <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title">Departmental | {{request.GET.perspective}}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <h6>Perspective: {{ request.GET.perspective }}</h6>
+                                    <h5>Departmental Objective</h5>
+                                    <form action="" method="POST">
+                                      {% csrf_token %}
+                                      {{ form|crispy }}
+                                      <button type="submit" name="departmentalObjectiveBtn" value="departmentalObjective" class="btn btn-sm btn-primary">Add</button>
+                                    </form>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                        {% else %}
+                          <small style="display: block; color: rgb(212, 55, 55);">Template: Closed.</small>
+                        {% endif %}
+                      {% endif %}
+                    {% endif %}
+                  {% endif %}
+                  <div class="modal fade" id="objective_update_{{ departmentalObjective.id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">Update Objective | {{request.GET.perspective}}</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          <h6>Perspective: {{ request.GET.perspective }}</h6>
+                          <h5>Departmental Objective: {{ departmentalObjective }}</h5>
+                          <form action="" method="POST">
+                            {% csrf_token %}
+                            <label class="form-label" for="departmentalObjective">Enter New Departmental Objective: </label>
+                            <input class="form-control" name="departmental_objective" id="departmentalObjective" type="text" value="{{ departmentalObjective }}">
+                            <label class="form-label" for="corporate_strategic_initiative">Corporate Strategic Initiative: </label>
+                            <input class="form-control" name="corporate_strategic_initiative" id="corporate_strategic_initiative" type="text" value="{{ departmentalObjective.corporate_strategic_initiative }}">
+                            <input type="hidden" name="objective_update_id" value="{{ departmentalObjective.id }}">
+                            <button type="submit" name="departmentalObjectiveUpdateBtn" value="departmentalObjectiveUpdate" class="btn btn-sm btn-primary mt-2">Update</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </p>
+              </td>
+              <!-- STRATEGIC RESULTS -->
+              <td>
+                {% for strategicResult in strategicResults %}
+                  {% if departmentalObjective == strategicResult.departmental_objective %}
+                    <p>
+                      - {{ strategicResult }}
+                      {% if request.GET.item != 'par' %}
+                        {% if request.user.is_work_plan_manager or request.user.is_director %}
+                          {% if department_template_exists_in_initial_template.template_Status == 'in progress' %}
+                            <i class="fa-solid fa-pen fa-xs" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#strategicResult_update_{{ strategicResult.id }}"></i>
+                          {% endif %}
+                          <div class="modal fade" id="strategicResult_update_{{ strategicResult.id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h1 class="modal-title fs-5" id="exampleModalLabel"> Update Strategic Result | {{ request.GET.perspective }}</h1>
+                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                  <h6>Perspective: {{ request.GET.perspective }}</h6>
+                                  <h5>Strategic Result: {{ strategicResult }}</h5>
+                                  <form action="" method="POST">
+                                    {% csrf_token %}
+                                    <label class="form-label" for="strategicResult">Enter New Strategic Result: </label>
+                                    <input class="form-control" name="strategic_result" id="strategicResult" type="text" value="{{ strategicResult }}">
+                                    <input type="hidden" name="strategic_update_id" value="{{ strategicResult.id }}">
+                                    <button type="submit" name="updateStrategicResultBtn" value="updateStrategicResult" class="btn btn-sm btn-primary mt-2">Update</button>
+                                  </form>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        {% endif %}
+                      {% endif %}
+                    </p>
+                  {% endif %}
+                {% endfor %}
+                {% if request.GET.item != 'par' %}
+                  {% if request.user.is_work_plan_manager or request.user.is_director %}
+                    {% if department_template_exists_in_initial_template.template_Status == 'in progress' %}
+                      <small style="display: block; color: gray;">Add Strategic Results</small>
+                      <button type="submit" style="border: 0px" data-bs-toggle="modal" data-bs-target="#strategicResult__{{ departmentalObjective.id }}"><i class="fa-solid fa-square-plus fa-lg"></i></button>
+                    {% endif %}
+                  {% endif %}
+                {%endif%}
+                <div class="modal fade" id="strategicResult__{{ departmentalObjective.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Strategic Result | {{ request.GET.perspective }}</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <h6>Perspective: {{ request.GET.perspective }}</h6>
+                        <h5>Strategic Result</h5>
+                        <p>Departmental Objective: {{ departmentalObjective }}</p>
+                        <form action="" method="POST">
+                          {% csrf_token %}
+                          <input type="hidden" name="departmentalObjective" value="{{ departmentalObjective.id }}">
+                          {{ strategicResultForm|crispy }}
+                          <button class="btn btn-small btn-primary" name="strategicResultBtn" value="strategicResult" type="submit">Add</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <!-- PERFORMANCE MEASURES -->
+              <td>
+              {% for strategicResult in strategicResults %}
+                {% if departmentalObjective == strategicResult.departmental_objective %}
+                  <small class="depend">{{ strategicResult }}</small>
+                  {% for performanceMeasure in performanceMeasures %}
+                    {% if performanceMeasure.strategic_result == strategicResult %}
+                      <p>
+                        - {{performanceMeasure}}
+                        {% if request.GET.item != 'par' %}
+                          {% if request.user.is_work_plan_manager or request.user.is_director %}
+                            {% if department_template_exists_in_initial_template.template_Status == 'in progress' %}
+                              <i class="fa-solid fa-pen fa-xs" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#performanceMeasure_update_{{ performanceMeasure.id }}"></i>
+                              <div class="modal fade" id="performanceMeasure_update_{{ performanceMeasure.id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h1 class="modal-title fs-5" id="exampleModalLabel">Update Performance Measure | {{ request.GET.perspective }}</h1>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                      <h6>Perspective: {{ request.GET.perspective }}</h6>
+                                      <h5>Performance Measure: {{ performanceMeasure }}</h5>
+                                      <form action="" method="POST">
+                                        {% csrf_token %}
+                                        <label class="form-label" for="performanceMeasureUpdate">Enter New Performance Measures: </label>
+                                        <input class="form-control" name="performance_measure" id="performanceMeasureUpdate" type="text" value="{{ performanceMeasure }}">
+                                        <label class="form-label" for="performance_measure_target">Enter New Performance Measure Target: </label>
+                                        <input class="form-control" name="performance_measure_target" id="performance_measure_target" type="text" value="{{ performanceMeasure.performance_measure_target }}">
+                                        <input type="hidden" name="performanceMeasure_update_id" value="{{ performanceMeasure.id }}">
+                                        <button type="submit" name="performanceMeasureUpdateBtn" value="performanceMeasureUpdate"
+                                          class="btn btn-sm btn-primary mt-2">Update</button>
+                                      </form>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            {% endif %}
+                          {% endif %}
+                        {% endif %}
+                      </p>
+                    {% endif %}
+                  {% endfor %}
+                  {% if request.GET.item != 'par' %}
+                    {% if request.user.is_work_plan_manager or request.user.is_director %}
+                      {% if department_template_exists_in_initial_template.template_Status == 'in progress' %}
+                        <small style="display: block; color: gray;">Add Performance Measures</small>
+                        <button style="border: 0px" data-bs-toggle="modal" data-bs-target="#performanceMeasure_{{ strategicResult.id }}"><i class="fa-solid fa-square-plus fa-lg"></i></button>
+                        <div class="modal fade" id="performanceMeasure_{{ strategicResult.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Performance Measure | {{ request.GET.perspective }}</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                <h6>Perspective: {{ request.GET.perspective }}</h6>
+                                <h5>Performance Measure</h5>
+                                <p>Strategic Result: {{ strategicResult }}</p>
+                                <form action="" method="POST">
+                                  {% csrf_token %}
+                                  <input type="hidden" name="strategicResult" value="{{ strategicResult.id }}">
+                                  {{ performanceMeasureForm|crispy }}
+                                  <button class="btn btn-small btn-primary" name="performanceMeasureBtn" value="performanceMeasure" type="submit">Add</button>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      {% endif %}
+                    {% endif %}
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+              </td>
+              <!-- TARGETS -->
+              <td>
+                {% for strategicResult in strategicResults %}
+                  {% if departmentalObjective == strategicResult.departmental_objective %}
+                    {% for performanceMeasure in performanceMeasures %}
+                      {% if performanceMeasure.strategic_result == strategicResult %}
+                        <small class="depend">{{ performanceMeasure }}</small>
+                        <p>
+                          - {{performanceMeasure.performance_measure_target}}
+                        </p>
+                      {% endif %}
+                    {% endfor %}
+                  {% endif %}
+                {% endfor %}
+              </td>
+              {% if request.GET.item %}
+                <!-- FORMULA -->
+                <td>
+                  {% for strategicResult in strategicResults %}
+                    {% if departmentalObjective == strategicResult.departmental_objective %}
+                      {% for performanceMeasure in performanceMeasures %}
+                        {% if performanceMeasure.strategic_result == strategicResult %}
+                          <small class="depend">{{ performanceMeasure }}</small>
+                          {% for formula in formulas %}
+                            {% if formula.performance_measure == performanceMeasure %}
+                              <p>
+                                - {{formula}}
+                                {% if request.user.is_work_plan_manager or request.user.is_director %}
+                                  {% if department_template_exists_in_initial_template.template_Status == 'in progress' %}
+                                    <!-- Everything about updates here -->
+                                    <i class="fa-solid fa-pen fa-xs" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#formula_update_{{ formula.id }}"></i>
+                                    <div class="modal fade" id="formula_update_{{ formula.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                      <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Update Formula | {{ request.GET.perspective }}</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                          </div>
+                                          <div class="modal-body">
+                                            <h6>Perspective: {{ request.GET.perspective }}</h6>
+                                            <p>Performance Measure: {{ performanceMeasure }}</p>
+                                            <h5>Update Formula</h5>
+                                            <form action="" method="POST">
+                                              {% csrf_token %}
+                                              <input type="hidden" name="formula_update_id" value="{{ formula.id }}">
+                                              <label class="form-label" for="formula_update">Formula</label>
+                                              <input class="form-control" type="text" name="formula" value="{{ formula }}">
+                                              <label class="form-label mt-2" for="performance_measure_actual_results_update">Performance Measure Actual Results</label>
+                                              <input class="form-control " type="text" name="performance_measure_actual_results" value="{{ formula.performance_measure_actual_results }}">
+                                              <button class="btn btn-sm btn-primary mt-2" name="formulaUpdateBtn" value="formulaUpdate" type="submit">Update</button>
+                                            </form>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  {% endif %}
+                                {% endif %}
+                              </p>
+                            {% endif %}
+                          {% endfor %}
+                          {% if request.user.is_work_plan_manager or request.user.is_director %}
+                            {% if department_template_exists_in_initial_template.template_Status == 'in progress' %}
+                              <small style="display: block; color: gray;">Add Formula</small>
+                              <button style="border: 0px;" data-bs-toggle="modal" data-bs-target="#formula_{{ performanceMeasure.id }}"><i class="fa-solid fa-square-plus fa-lg" style="color: #7c0303;"></i></button>
+                              <div class="modal fade" id="formula_{{ performanceMeasure.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h1 class="modal-title fs-5" id="exampleModalLabel">Formula | {{ request.GET.perspective }}</h1>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                      <h6>Perspective: {{ request.GET.perspective }}</h6>
+                                      <p>Performance Measure: {{ performanceMeasure }}</p>
+                                      <h5>Formula</h5>
+                                      <form action="" method="POST">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="performanceMeasure" value="{{ performanceMeasure.id }}">
+                                        {{ formulaForm|crispy }}
+                                        <button class="btn btn-small btn-primary" name="formulaBtn" value="formula" type="submit">Add</button>
+                                      </form>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            {% endif %}
+                          {% endif %}
+                        {% endif %}
+                      {% endfor %}
+                    {% endif %}
+                  {% endfor %}
+                </td>
+                <!-- PERFORMANCE MEASURE (Actual Results) -->
+                <td>
+                  {% for strategicResult in strategicResults %}
+                    {% if departmentalObjective == strategicResult.departmental_objective %}
+                      {% for performanceMeasure in performanceMeasures %}
+                        {% if performanceMeasure.strategic_result == strategicResult %}
+                          {% for formula in formulas %}
+                            {% if formula.performance_measure == performanceMeasure %}
+                              <small class="depend">{{ formula }}</small>
+                              <p>
+                                - {{formula.performance_measure_actual_results}}
+                              </p>
+                            {% endif %}
+                          {% endfor %}
+                        {% endif %}
+                      {% endfor %}
+                    {% endif %}
+                  {% endfor %}
+                </td>
+              {% endif %}
+              <!-- CORPORATE STRATEGIC INITIATIVE -->
+              <td>
+                <p>
+                  - {{ departmentalObjective.corporate_strategic_initiative }}
+                </p>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td>
+                {% if request.GET.item != 'par' %}
+                  {% if request.user.is_work_plan_manager %}
+                    {% if department_template_exists_in_initial_template.template_Status == 'in progress' %}
+                      <small style="display: block; color: gray;">Add Departmental Objective</small>
+                      <!-- Modal Triggers -->
+                      {% if request.GET.perspective == 'Internal Business Processes'%}
+                        <button style="border: 0px" data-bs-toggle="modal" data-bs-target="#objective_InternalBusinessProcesses"><i class="fa-solid fa-square-plus fa-lg"></i></button>
+                      {% elif request.GET.perspective == 'Organizational Capacity'%}
+                        <button style="border: 0px" data-bs-toggle="modal" data-bs-target="#objective_OrganizationalCapacity"><i class="fa-solid fa-square-plus fa-lg"></i></button>
+                      {% else %}
+                        <button style="border: 0px" data-bs-toggle="modal" data-bs-target="#objective_{{ request.GET.perspective }}"><i class="fa-solid fa-square-plus fa-lg"></i></button>
+                      {% endif %}
+                      <!-- Modals -->
+                      {% if request.GET.perspective == 'Internal Business Processes'%}
+                        <div class="modal fade" id="objective_InternalBusinessProcesses" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                      {% elif request.GET.perspective == 'Organizational Capacity' %}
+                        <div class="modal fade" id="objective_OrganizationalCapacity" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                      {% else %}
+                        <div class="modal fade" id="objective_{{ request.GET.perspective }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                      {% endif %}
+                          <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title">Departmental | {{request.GET.perspective}}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                <h6>Perspective: {{ request.GET.perspective }}</h6>
+                                <h5>Departmental Objective</h5>
+                                <form action="" method="POST">
+                                  {% csrf_token %}
+                                  {{ form|crispy }}
+                                  <button type="submit" name="departmentalObjectiveBtn" value="departmentalObjective" class="btn btn-sm btn-primary">Add</button>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    {% else %}
+                      <small style="display: block; color: rgb(212, 55, 55);">Template: Closed.</small>
+                    {% endif %}
+                  {% endif %}
+                {% endif %}
+              </td>
+              <td>
+                <small style="display: block; color: gray;">No Strategic Results</small>
+              </td>
+              <td>
+                <small style="display: block; color: gray;">No Performance Measures</small>
+              </td>
+              <td>
+                <small style="display: block; color: gray;">No Targets</small>
+              </td>
+              {% if request.GET.item %}
+                <td>{# FORMULAR #}
+                  <small style="display: block; color: gray;">No Formula</small>
+                </td>
+                <td>{# <td>PERFORMANCE MEASURE (Actual Results) #}
+                  <small style="display: block; color: gray;">No Targets</small>
+                </td>
+              {% endif %}
+              <td>
+                <small style="display: block; color: gray;">No Corporate Strategic Initiative</small>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>Department Template Does not  Exists</p>
+    {% endif %}
+  {% else %}
+    <!-- TEMPLATE DOES NOT EXIST -->
+    <p>Template Does not exist </p>
+  {% endif %}
+</div>
+<!-- Modal Divs Objectives-->
+<div class="modal fade" id="updateObjective" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Update Objective
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,19 @@
+{% load static %}
+
+<style>
+  .navbar{
+    position: fixed;
+    top: 0;
+    width: 98%;
+    z-index: 100; /* Higher z-index to keep navbar above other elements */
+  }
+</style>
+
+<nav class=" navbar">
+    <div class="logo">
+      <img src="{% static 'img/bou.png' %}" alt="Logo">
+    </div>
+    <div class="user">
+      <span style="font-weight: 700;">Welcome, {{request.user}}</span>
+    </div>
+  </nav>

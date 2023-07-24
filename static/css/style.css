@@ -1,0 +1,352 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    min-height: 150vh;
+    display: flex;
+    flex-direction: column;
+}
+
+body a {
+    text-decoration: none;
+}
+
+.header a {
+    text-decoration: none;
+    color: grey;
+    display: inline-block;
+    padding-right: 10px;   
+}
+
+.header a:hover {
+    text-decoration: underline;
+    color: #034694
+}
+
+.header a:nth-child(3):hover {
+    text-decoration: underline;
+    color: #7a3030;
+}
+
+.header .active {
+    text-decoration: underline;
+    color: #034694
+}
+
+.header .par_active {
+    text-decoration: underline;
+    color: #C00000;
+}
+
+.sidebar .active {
+    text-decoration: underline;
+    color: #034694
+}
+
+.sidebar .par_active {
+    text-decoration: underline;
+    color: #C00000;
+}
+
+.header {
+    display: flex;  
+    flex-direction: row;
+    justify-content: space-between;  
+    box-shadow: 0 0 10px rgba(51, 51, 51, 0.237);
+    border-radius: 0 0 5px 5px;
+}
+
+.header .logo img {
+    width: 200px;
+    height: 60px;
+}
+
+.header .main_nav {
+    padding-top: 35px;
+}
+
+.header .user_details {
+    padding-top: 35px;
+    /* padding: 0 10px; */
+    
+}
+
+.header .user_details span {
+    color: #7a3030;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.header .user_details span a {
+    display: inline-block;
+    padding: 0 5px;
+    background-color: #7a3030;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.sidebar {
+    background-color: #F2F3F5;
+    height: 30vh;
+    padding-top: 5px;
+    padding-right: 0px;
+    border-radius: 5px 10px 10px 5px;
+    box-shadow: 2px 2px 5px #99a6af;
+    position: fixed;
+}
+
+.main {
+    box-shadow: 2px 2px 5px #99a6af;
+    border-radius: 0px 10px 10px 5px;
+    border-top: 0;
+    border-left: 0;
+    margin-left: 320px;
+}
+
+.strategy_dashboard_info, .strategy_awp_info, .strategy_par_info {
+    box-shadow: 2px 2px 5px #99a6af;
+    border-radius: 0px 10px 10px 5px;
+    border-top: 0;
+    border-left: 0;
+    /* margin-top: 10px; */
+}
+
+#annual_workplan {
+    margin-top: 10px;
+}
+
+.awp-item {
+    background-color: #8bc5ff;
+    padding: 3px 0 3px 10px;
+    border-radius: 5px;
+    margin-right: 0px;
+    cursor: pointer;
+    color: black;
+    font-weight: 400;
+}
+
+
+.awp-item:hover {
+    color: white;
+    background-color: #005a9c;
+}
+
+
+.selected {
+    background-color: #005a9c;
+    color: white;
+    padding: 3px 0 3px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0px;
+}
+
+.sidebar a {
+    color: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    font-size: 15px;
+    margin: 3px 0 0 30px;
+    padding: 3px
+}
+
+.sidebar a:hover {
+    color: #034694;
+}
+
+/* .scorecard_perspectives {
+    display: none;
+}*/
+
+.awp_perspectives_off {
+    display: none;
+}
+
+.awp_perspectives_on {
+    display: block;
+}
+
+.sc_perspectives_off {
+    display: none;
+}
+
+.sc_perspectives_on {
+    display: block;
+}
+
+/* Score Card */
+.awp_sc_table thead tr {
+    /* background: #005DB8; */
+    background: #005cb8de;
+    color: white;
+}
+
+
+#par thead tr {
+    background: #c00000cd;
+    color: white;
+}
+
+.awp_par_add_btn, .awp_par_update_btn {
+    color: white;
+    padding: 0 12px;
+    border-radius: 10px;
+    border: none;
+}
+
+.awp_par_add_btn {
+    background: #002244;
+}
+
+.awp_par_update_btn {
+    background: #76ABDF;
+}
+
+.depend {
+    display: block;
+    color: #3c8fcfee;
+    text-decoration: underline;
+}
+
+/* TABLE PROPERTIES */
+table {
+    table-layout: fixed;
+    border-radius: 10px;
+    border-spacing: 0;
+    border: 1px solid;
+}
+
+table tbody tr:first-child, table thead th:first-child {
+    border-top-left-radius: 10px;
+}
+
+table tbody tr:first-child, table thead th:last-child {
+    border-top-right-radius: 10px;
+}
+
+table tbody tr:last-child, table thead td:first-child {
+    border-bottom-left-radius: 10px;
+}
+
+table tbody tr:last-child, table thead td:last-child {
+    border-bottom-right-radius: 10px;
+}
+
+/* STRATEGY STYLES */
+.financial_years a, .departments a {
+    display: flex;
+    flex-direction: column;
+    margin: 5px;
+}
+
+
+/* SEARCH BOX */
+.search{
+    position: relative;
+    box-shadow: 0 0 40px rgba(51, 51, 51, .1);
+}
+
+.search input{
+    height: 60px;
+    text-indent: 25px;
+    border: 2px solid #d6d4d4;
+}
+
+.search input:focus{
+    box-shadow: none;
+    border: 2px solid blue;
+}
+
+.search .fa-search{
+    position: absolute;
+    top: 20px;
+    left: 16px;
+}
+
+.search button{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    height: 50px;
+    width: 110px;
+    background: blue;
+}
+
+#selected_item_and_role {
+    margin-top: 1%;
+    margin-bottom: 2%;
+    color: white;
+}
+
+#selected_item_and_role h6:first-child, h6:last-child {
+    font-weight: bolder;
+    /* border-bottom: 1px solid white; */
+    display: block;
+    /* padding-top: 0.6%; */
+    background: rgba(0, 92, 184, 0.67);
+    padding: 0.4%;
+    border-radius: 5px;
+}
+
+/* .top_header {
+    position: fixed;
+    z-index: 5;
+    width: 98%;
+} */
+
+.strategy_dashboard_sidebar {
+    background-color: #F2F3F5;
+    height: 70vh;
+    padding-top: 5px;
+    padding-right: 0px;
+    border-radius: 5px 10px 10px 5px;
+    box-shadow: 2px 2px 5px #99a6af;
+}
+
+.strategy_dashboard_sidebar ul {
+    list-style-type: none;
+}
+
+.strategy_dashboard_sidebar .closeTmpt, .strategy_dashboard_sidebar .createTmpt {
+    margin-left: 30px;
+}
+
+.separator {
+    border: 5px solid rgba(0, 0, 0, 0.904); 
+    margin: 0 auto; 
+    width: 500px; 
+    border-radius: 5px;
+    box-shadow: 3px 3px 8px #7a3030;
+}
+
+
+body footer {
+    /* background: #754b4b; */
+    background: rgb(179, 176, 167);
+    width: 100%;
+    margin-bottom: -2%;
+    margin-top: 4%;
+    position: fixed;
+    bottom: 0;
+    margin-top: 20%;
+    padding: 0.5% 0;
+    box-shadow: -6px 3px 5px #292626;
+}
+
+body footer p {
+    color: #7a3030;
+    font-size:18px;
+    font-weight:600;
+}
+
+body footer{
+    /* z-index: 100; */
+    position: relative;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}

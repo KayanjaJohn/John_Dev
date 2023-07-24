@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %} Strategy Dashboard {% endblock title%}
+
+{% block content %}
+    {% include 'header.html' %}
+    {% include 'selected_menu_and_role.html'%}
+    <div class="row  p-3" style="margin-bottom:-22%;">
+        <div class="col-2">
+            {% if initialTemplate %}
+                <div class="mt-2 p-3 strategy_dashboard_sidebar">
+                    <h5>Template Details:</h5>
+                    <ul>
+                        <li>Status: <small style="color: green; font-weight:bolder;">{{initialTemplate.template_Status}}</small></li>
+                        <li>Name: <small>{{initialTemplate.template_Name}}</small></li>
+                        <li>Financial Year: <small>{{initialTemplate.financial_Year_Starts|date:"Y"}}-{{initialTemplate.financial_Year_Ends|date:"Y"}}</small></li>
+                    </ul>
+                    <button class="btn btn-sm btn-info btn-danger closeTmpt" data-bs-toggle="modal" data-bs-target="#closeTmpt">Close Template</button>
+                    <div class="modal fade" id="closeTmpt" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-md">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h1 class="modal-title fs-5" id="staticBackdropLabel">Close Template:</h1>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Do you want to close this template?</p>
+                                <form action="" method="POST" style="display: inline-block; margin-right: 15px;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-info" name="rejectTmpt" value="rejectTmpt">No</button>
+                                </form>
+                                <form action="" method="POST" style="display: inline-block;">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{initialTemplate.id}}" name="template_id">
+                                    <button type="submit" class="btn btn-sm btn-danger" name="closeTmpt" value="closeTmpt">Yes</button>
+                                </form>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="mt-2 strategy_dashboard_sidebar">
+                    <ul>
+                        <li>Status: <small style="color: green; font-weight:bolder;">No Template</small></li>
+                        <li>Template Name: <small>-</small></li>
+                        <li>Financial Year: <small>-</small></li>
+                    </ul>
+                    <button class="btn btn-sm btn-info createTmpt" name="createTmpt" value="createTmpt" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Initiate Template</button>
+                    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h1 class="modal-title fs-5" id="staticBackdropLabel">Create Template</h1>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="" method="POST">
+                                    {% csrf_token %}
+                                    {{ templateForm|crispy }}
+                                    <label for="select_template_status" class="form-label">Template Status</label>
+                                    <select name="template_status" id="select_template_status" class="form-select">
+                                        <option selected>Select Status</option>
+                                        <option value="open">Open</option>
+                                        <option value="paused">Pause</option>
+                                        <option value="closed">Close</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-sm btn-info mt-3" name="createTmpt" value="createTmpt">Create Template</button>
+                                </form>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                    <p>Check Previous Templates: <a href="#">Here</a></p>
+                </div>
+            {% endif %}
+        </div>
+        <div class="col-10 strategy_dashboard_info p-3">
+            <h5>Overall Strategy Information</h5>
+            <hr>
+            <div class="container mb-5">
+                <div class="row" style="position: relative;">
+                    <div class="col-3" class="d-flex aligns-items-center justify-content-center">
+                        <h6>Number of Departments:</h6>
+                        <p>{{number_of_departments}}</p>
+                    </div>
+                    <div class="col-3">
+                        <h6>Accepted Templates:</h6>
+                        <p>{{accepted_templates}}</p>
+                    </div>
+                    <div class="col-3">
+                        <h6>Templates in Progress:</h6>
+                        <p>{{templates_in_progress}}</p>
+                    </div>
+                    <div class="col-3">
+                        <h6>Submitted Templates:</h6>
+                        <p>{{templates_submitted}}</p>
+                    </div>
+                </div>
+            </div>
+            <h5 class="pt-5">Strategy Statistical Data</h5>
+            <hr>
+            <div class="row">
+                <div class="col-5">
+                    <small>Summary</small>
+                    <div>
+                        <canvas id="Summary" height="230" width="500"></canvas>
+                    </div>
+                    <script>
+                        const ctx = document.getElementById('Summary');
+
+                        new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                                datasets: [{
+                                    label: '# of Votes',
+                                    data: [12, 19, 3, 5, 2, 3],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    </script>
+                </div>
+                <div class="col-5">
+                    <small>Summary</small>
+                    <canvas id="chartId" aria-label="chart" height="300" width="500"></canvas>
+                    <script>
+                        const chrt = document.getElementById("chartId").getContext("2d");
+                        new Chart(chrt, {
+                           type: 'scatter',
+                           data: {
+                              labels: ["HTML", "CSS", "JAVASCRIPT", "CHART.JS", "JQUERY", "BOOTSTRP"],
+                              datasets: [{
+                                    type: 'scatter',
+                                    label: "online tutorial subjects",
+                                    data: [
+                                       {x:10, y:14},
+                                       {x:25, y:35},
+                                       {x:21, y:20},
+                                       {x:35, y:28},
+                                       {x:15, y:10},
+                                       {x:19, y:30}
+                                    ],
+                                    backgroundColor: ['yellow', 'aqua', 'pink', 'lightgreen', 'gold', 'lightblue'],
+                                    borderColor: ['black'],
+                                    radius: 8,
+                                 },
+                                 {
+                                    type: 'polarArea',
+                                    label: "online tutorial exam",
+                                    data: [20, 40, 30, 35, 30, 20],
+                                    backgroundColor: ['navy', 'aqua', 'pink', 'lightgreen', 'lightblue', 'gold'],
+                                    borderColor: ['black'],
+                                    borderWidth: 2,
+                                    pointRadius: 5,
+                                 }
+                              ],
+                           },
+                           options: {
+                              responsive: false,
+                              scales: {
+                                 y: {
+                                    beginAtZero: true
+                                 }
+                              }
+                           },
+                        });
+                    </script>                  
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6">
+                    <canvas id="chartIdlast" aria-label="chart" height="350" width="580"></canvas>
+                    <script>
+                        var chartIdlast = document.getElementById("chartIdlast").getContext("2d");
+                        new Chart(chartIdlast, {
+                           type: 'pie',
+                           data: {
+                              labels: ["HTML", "CSS", "JAVASCRIPT", "CHART.JS", "JQUERY", "BOOTSTRP"],
+                              datasets: [{
+                                 label: "online tutorial subjects",
+                                 data: [20, 40, 13, 35, 20, 38],
+                                 backgroundColor: ['yellow', 'aqua', 'pink', 'lightgreen', 'gold', 'lightblue'],
+                                 hoverOffset: 5
+                              }],
+                           },
+                           options: {
+                              responsive: false,
+                           },
+                        });
+                    </script>
+                </div>
+                <div class="col-3"></div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

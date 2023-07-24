@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Update User{% endblock title %}
+
+{% block content %}
+    {% include 'adminHeader.html' %}
+
+    <div class="container">
+      <h1 class="label" style="margin-left:260px; margin-bottom: 15px; font-family: 'Roboto';">UPDATE USER</h1>
+        <form method="POST" style="margin-left: 180px;">
+            {% csrf_token %}
+            <h3 class="sections">Personal Details</h3>
+            <div class="row">
+                <div class="col-lg-6">
+                    <label for="{{ form.username.id_for_label }}">Username</label>
+                    {{ form.username }}
+                </div>
+                <div class="col-lg-6">
+                    <label for="{{ form.first_name.id_for_label }}">First Name</label>
+                    {{ form.first_name }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <label for="{{ form.last_name.id_for_label }}">Last Name</label>
+                    {{ form.last_name }}
+                </div>
+                <div class="col-lg-6">
+                    <label for="{{ form.email.id_for_label }}">Email</label>
+                    {{ form.email }}
+                </div>
+            </div>
+            <h3 class="sections">Department Details</h3>
+            <div class="row">
+                <div class="col-lg-6">
+                    <!-- <label for="{{ form.department.id_for_label }}">Department</label> -->
+                    {{ form.department|as_crispy_field }}
+                </div>
+                <div class="col-lg-6">
+                    <label for="{{ form.disconnect_date.id_for_label }}">Expirey Date</label>
+                    {{ form.disconnect_date }}
+                </div>
+            </div>
+            <h3 class="sections">Roles</h3>
+            <div class="row ml-5">
+              <div class="col-lg-12 d-flex">
+                <div class="form-group flex-grow-1">
+                  {{ form.is_strategy|as_crispy_field }}
+                </div>
+                <!-- <div class="form-group flex-grow-1">
+                  {{ form.is_admin|as_crispy_field }}
+                </div> -->
+                <div class="form-group flex-grow-1">
+                  {{ form.is_work_plan_manager|as_crispy_field }}
+                </div>
+                <div class="form-group flex-grow-1">
+                  {{ form.is_manager|as_crispy_field }}
+                </div>
+                <div class="form-group flex-grow-1">
+                  {{ form.is_director|as_crispy_field }}
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-5"></div>
+              <div class="col-lg-4">
+                <input type="submit" value="Update" class="btn btn-sm btn-info submit">
+              </div>
+              <div class="col-lg-3"></div>
+            </div>
+        </form>
+    </div>
+
+    {% include 'adminSidebar.html' %}
+{% endblock content %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/Register.css' %}">
+{% endblock %}

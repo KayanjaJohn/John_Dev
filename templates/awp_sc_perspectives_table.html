@@ -1,0 +1,384 @@
+<div class="container-fluid ">
+    {% if initialTemplate %}
+        {% if department_template_exists_in_initial_template %}
+            {% for perspective in perspectives %}
+                <h4>Perspective: {{ perspective }}</h4>
+                <h6>Section: Scorecard</h6>
+                <table class="table table-bordered awp_sc_table table-responsive" id="{% if request.GET.menu == 'Performance Assessment Report' %}par{% endif %}">
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                Departmental Objectives
+                            </th>
+                            <th scope="col">
+                            Strategic Result
+                            </th>
+                            <th scope="col">
+                                Performance Measures
+                            </th>
+                            <th scope="col">
+                            Targets (Quarterly, Annual)
+                            </th>
+                            {% if request.GET.menu == 'Performance Assessment Report' %}
+                                <th>Formula</th>
+                                <th>Performance Measure (Actual Results)</th>
+                            {% endif %}
+                            <th scope="col">
+                            Corporate Strategic Initiative
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for departmentalObjective in departmentalObjectives %}
+                            {% if departmentalObjective.perspective == perspective %}
+                                <tr>
+                                    <td>
+                                        <p>
+                                            - {{ departmentalObjective }}     
+                                        </p>
+                                    </td>
+                                    <td>
+                                        
+                                        {% for strategicResult in strategicResults %}
+                                            {% if strategicResult.departmental_objective == departmentalObjective %}
+                                                {% ifchanged departmentalObjective%}
+                                                    <small class="depend">{{ departmentalObjective }}</small>
+                                                {% endifchanged %}
+                                                <p>- {{strategicResult}}</p>
+                                            {% endif %}
+                                        {% endfor %}
+                                        
+                                    </td>
+                                    <td>
+                                        {% for strategicResult in strategicResults %}
+                                            {% if departmentalObjective == strategicResult.departmental_objective %}
+                                                
+                                                {% for performanceMeasure in performanceMeasures %}
+                                                    {% if performanceMeasure.strategic_result == strategicResult %}
+                                                        {% ifchanged performanceMeasure.strategic_result %}
+                                                        <small class="depend">{{ performanceMeasure.strategic_result }}</small>
+                                                        {% endifchanged %}
+                                                        <p>- {{performanceMeasure}}</p>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {% for strategicResult in strategicResults %}
+                                            {% if departmentalObjective == strategicResult.departmental_objective %}
+                                                {% for performanceMeasure in performanceMeasures %}
+                                                    {% if performanceMeasure.strategic_result == strategicResult %}
+                                                        <small class="depend">{{ performanceMeasure }}</small>
+                                                        {% for target_quarterly_annual in targets_quarterly_annual %}
+                                                        {% if target_quarterly_annual.performance_measure == performanceMeasure %}
+                                                            <p>- {{target_quarterly_annual}}</p>
+                                                        {% endif %}
+                                                        {% empty %}
+                                                        <small style="display: block; color: gray;">No Targets</small>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    {% if request.GET.menu == 'Performance Assessment Report' %}
+                                        <td>
+                                            {% for strategicResult in strategicResults %}
+                                                {% if departmentalObjective == strategicResult.departmental_objective %}
+                                                    {% for performanceMeasure in performanceMeasures %}
+                                                        {% if performanceMeasure.strategic_result == strategicResult %}
+                                                            <small class="depend">{{ performanceMeasure }}</small>
+                                                            {% for formula in formulas %}
+                                                                {% if formula.performance_measure == performanceMeasure %}
+                                                                    <p>
+                                                                        - {{formula}}
+                                                                    </p>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                        <td>
+                                            {% for strategicResult in strategicResults %}
+                                                {% if departmentalObjective == strategicResult.departmental_objective %}
+                                                    {% for performanceMeasure in performanceMeasures %}
+                                                        {% if performanceMeasure.strategic_result == strategicResult %}
+                                                            <small class="depend">{{ performanceMeasure }}</small>
+                                                            {% for formula in formulas %}
+                                                                {% if formula.performance_measure == performanceMeasure %}
+                                                                    <p>
+                                                                        - {{formula.performance_measure_actual_results}}
+                                                                    </p>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                    {% endif %}
+                                    <td>
+                                        <p>- {{departmentalObjective.corporate_strategic_initiative}}</p>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <h6>Section: Annual work plan</h6>
+                <table class="table table-bordered awp_sc_table table-responsive" id="{% if request.GET.menu == 'Performance Assessment Report' %}par{% endif %}">
+                    <thead>
+                        <tr>
+                            <th scope="col">Departmental Activities</th>
+                            <th scope="col">Deliverables</th>
+                            <th scope="col">DPI, CSI, BAU</th>
+                            <th scope="col">Budget Allocation</th>
+                            <th scope="col">Start-End Dates</th>
+                            <th scope="col">Lead Person</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for departmentalObjective in departmentalObjectives %}
+                            {% if departmentalObjective.perspective == perspective %}
+                                <tr>
+                                    <td>
+                                        {% for strategicResult in strategicResults %}
+                                            {% if strategicResult.departmental_objective == departmentalObjective %}
+                                                {% for performanceMeasure in performanceMeasures %}
+                                                    
+                                                        {% if performanceMeasure.strategic_result == strategicResult  %}
+                                                            <small class="depend">{{performanceMeasure}}</small>
+                                                            {% for departmentalInitiative in departmentalInitiatives %}
+                                                                {% if departmentalInitiative.performance_measure == performanceMeasure %}
+                                                                    <p>- {{ departmentalInitiative }}</p>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {% for strategicResult in strategicResults %}
+                                            {% if strategicResult.departmental_objective == departmentalObjective %}
+                                                {% for performanceMeasure in performanceMeasures %}
+                                                    
+                                                        {% if performanceMeasure.strategic_result == strategicResult  %}
+                                                            {% for departmentalInitiative in departmentalInitiatives %}
+                                                                {% if departmentalInitiative.performance_measure == performanceMeasure %}
+                                                                    <small class="depend">{{departmentalInitiative}}</small>
+                                                                    {% for deliverable in deliverables %}
+                                                                        {% if departmentalInitiative == deliverable.departmentalInitiativeOrActivity %}
+                                                                            <p>{{ deliverable }}</p>
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {% for strategicResult in strategicResults %}
+                                            {% if strategicResult.departmental_objective == departmentalObjective %}
+                                                {% for performanceMeasure in performanceMeasures %}
+                                                    
+                                                        {% if performanceMeasure.strategic_result == strategicResult  %}
+                                                            {% for departmentalInitiative in departmentalInitiatives %}
+                                                                {% if departmentalInitiative.performance_measure == performanceMeasure %}
+                                                                    <small class="depend">{{departmentalInitiative}}</small>
+                                                                    <p>- {{ departmentalInitiative.DPI_CSI_BAU }}</p>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {% for strategicResult in strategicResults %}
+                                            {% if strategicResult.departmental_objective == departmentalObjective %}
+                                                {% for performanceMeasure in performanceMeasures %}
+                                                    
+                                                        {% if performanceMeasure.strategic_result == strategicResult  %}
+                                                            {% for departmentalInitiative in departmentalInitiatives %}
+                                                                {% if departmentalInitiative.performance_measure == performanceMeasure %}
+                                                                    <small class="depend">{{departmentalInitiative}}</small>
+                                                                    <p>- {{ departmentalInitiative.budget_allocation }}</p>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {% for strategicResult in strategicResults %}
+                                            {% if strategicResult.departmental_objective == departmentalObjective %}
+                                                {% for performanceMeasure in performanceMeasures %}
+                                                    
+                                                        {% if performanceMeasure.strategic_result == strategicResult  %}
+                                                            {% for departmentalInitiative in departmentalInitiatives %}
+                                                                {% if departmentalInitiative.performance_measure == performanceMeasure %}
+                                                                    {% for deliverable in deliverables %}
+                                                                        {% if departmentalInitiative == deliverable.departmentalInitiativeOrActivity %}
+                                                                            <small class="depend">{{deliverable}}</small>
+                                                                            <p>- {{deliverable.start_date}}-{{deliverable.end_date}}</p>
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {% for strategicResult in strategicResults %}
+                                            {% if strategicResult.departmental_objective == departmentalObjective %}
+                                                {% for performanceMeasure in performanceMeasures %}
+                                                    
+                                                        {% if performanceMeasure.strategic_result == strategicResult  %}
+                                                            {% for departmentalInitiative in departmentalInitiatives %}
+                                                                {% if departmentalInitiative.performance_measure == performanceMeasure %}
+                                                                    {% for deliverable in deliverables %}
+                                                                        {% if departmentalInitiative == deliverable.departmentalInitiativeOrActivity %}
+                                                                            {% ifchanged %}
+                                                                                <small class="depend" style="word-wrap: normal;">{{deliverable.lead_person}}</small>
+                                                                            {% endifchanged %}
+                                                                            <p>{{deliverable}}</p>
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endfor %}
+        {% else %}
+            <p>Department Does not Template Exists</p>
+        {% endif %}
+        {% comment %}
+            {% for perspective in perspectives %}
+                <h6>{{perspective}} Perspective Table </h6>
+                <table class="table table-bordered awp_sc_table table-responsive">
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                Departmental Objectives
+                            </th>
+                            <th scope="col">
+                            Strategic Result
+                            </th>
+                            <th scope="col">
+                                Performance Measures
+                            </th>
+                            <th scope="col">
+                            Targets (Quarterly, Annual)
+                            </th>
+                            <th scope="col">
+                            Corporate Strategic Initiative
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for departmentalObjective in departmentalObjectives %}
+                            {% if departmentalObjective.perspective == perspective %}
+                            <tr>
+                                <td>
+                                    <p>
+                                        {% if initial_template %}
+                                            {% for initial_temp in initial_template%}
+                                                {% if initial_temp.template_Name == departmentalObjective.template_name %}
+                                                    - {{ departmentalObjective }}
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    </p>
+                                </td>
+                                <td>
+                                    
+                                    {% for strategicResult in strategicResults %}
+                                        {% if strategicResult.departmental_objective == departmentalObjective %}
+                                            {% ifchanged departmentalObjective%}
+                                                <small class="depend">{{ departmentalObjective }}</small>
+                                            {% endifchanged %}
+                                            <p>- {{strategicResult}}</p>
+                                        {% endif %}
+                                    {% endfor %}
+                                    
+                                </td>
+                                <td>
+                                    {% for strategicResult in strategicResults %}
+                                        {% if departmentalObjective == strategicResult.departmental_objective %}
+                                            
+                                            {% for performanceMeasure in performanceMeasures %}
+                                                {% if performanceMeasure.strategic_result == strategicResult %}
+                                                    {% ifchanged performanceMeasure.strategic_result %}
+                                                    <small class="depend">{{ performanceMeasure.strategic_result }}</small>
+                                                    {% endifchanged %}
+                                                    <p>- {{performanceMeasure}}</p>
+                                                {% endif %}
+                                            {% endfor %}
+                                            
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for strategicResult in strategicResults %}
+                                        {% if departmentalObjective == strategicResult.departmental_objective %}
+                                            {% for performanceMeasure in performanceMeasures %}
+                                                {% if performanceMeasure.strategic_result == strategicResult %}
+                                                    <small class="depend">{{ performanceMeasure }}</small>
+                                                    {% for target_quarterly_annual in targets_quarterly_annual %}
+                                                    {% if target_quarterly_annual.performance_measure == performanceMeasure %}
+                                                        <p>- {{target_quarterly_annual}}</p>
+                                                    {% endif %}
+                                                    {% empty %}
+                                                    <small style="display: block; color: gray;">No Targets</small>
+                                                    {% endfor %}
+                                                    
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for corporateStrategicInitiative in corporateStrategicInitiatives%}
+                                        {% if corporateStrategicInitiative.departmental_objective == departmentalObjective %}
+                                            <p>- {{corporateStrategicInitiative}}</p>
+                                        {% else %}
+                                        <small style="display: block; color: gray;">No initiative added</small>
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endfor %}
+        {% endcomment %}
+    {% else %}
+        <p>No template</p>
+    {% endif %}
+</div>

@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %} Strategy | Templates {% endblock title%}
+
+{% block content %}
+    {% include 'header.html' %}
+    {% include 'selected_menu_and_role.html'%}
+    <div class="container mt-5">
+        <h4>Departments and Templates Information</h4>
+        <hr>
+        <div class="row height d-flex justify-content-center align-items-center">
+            <div class="col-md-5 mx-auto">
+                <div class="small">Search Department:</div>
+                <form action="">
+                    <input type="search" class="form-control" placeholder="Search Department">
+                    <button type="submit" class="btn btn-primary mt-2 btn-sm center">Search</button>
+                </form>
+            </div>
+        </div>
+        <!-- <form action="" method="POST">
+            {% csrf_token %}
+            {{ templateForm|crispy }}
+            <label for="select_template_status" class="form-label">Template Status</label>
+            <select name="template_status" id="select_template_status" class="form-select">
+                <option selected>Select Status</option>
+                <option value="open">Open</option>
+                <option value="paused">Pause</option>
+                <option value="closed">Close</option>
+            </select>
+            <button type="submit" class="btn btn-sm btn-info mt-3" name="templateBtn" value="initiate_template">Submit</button>
+        </form> -->
+        <div class="mt-5">
+            <table class="table table-bordered ">
+                <thead>
+                    <th scope="col">Template Name</th>
+                    <th scope="col">Financial Year</th>
+                    <th scope="col">Template Status</th>
+                    <th scope="col">Department</th>
+                    <th scope="col">Created By</th>
+                    <th scope="col">Created On</th>
+                    <th scope="col">Update Template</th>
+                </thead>
+                <tbody>
+                    {% for template_info in templates_info %}
+                        <tr>
+                            <td>{{ template_info.template_Name }}</td>
+                            <td>{{ template_info.financial_Year_Starts }} - {{ template_info.financial_Year_Ends }}</td>
+                            <td>{{ template_info.template_Status }}</td>
+                            <td>{{ template_info.department }}</td>
+                            <td>{{ template_info.created_by }}</td>
+                            <td>{{ template_info.acceptance_Date }}</td>
+                            <td>
+                                {% if template_info.department %}
+                                    <i class="fa-solid fa-pen fa-lg" data-bs-toggle="modal" data-bs-target="#template_{{ template_info.id}}" style="color: #473e3e; margin-left: 60px; cursor:pointer;"></i>
+                                    <div class="modal fade" id="template_{{ template_info.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <h1 class="modal-title fs-5" id="exampleModalLabel">{{template_info.department}} | Update Status</h1>
+                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                              
+                                            </div>
+                                          </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock content %}

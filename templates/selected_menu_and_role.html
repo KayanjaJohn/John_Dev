@@ -1,0 +1,18 @@
+<div class="container-fluid d-flex justify-content-between" id="selected_item_and_role">
+    <h6>{{request.GET.menu}}</h6>
+    <h6>
+      {% if request.user.is_work_plan_manager %}
+        Work Plan Manager
+      {% elif request.user.is_director %}
+        Director
+      {% elif request.user.is_manager %}
+        Manager
+      {% elif request.user.is_strategy %}
+        Strategy
+      {% elif request.user.is_director and request.user.is_manager%}
+        Director, Manager
+      {% elif request.user.is_work_plan_manager and request.user.is_manager%}
+        Work Plan Manager, Manager
+      {% endif %}
+    </h6>
+</div>

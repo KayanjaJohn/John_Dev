@@ -1,0 +1,50 @@
+{% load static %}
+<div class="Sidebar left">
+  <div class="Sidebar">
+    <a href="{% url 'adminDashboard' %}" class="adminDashboard">
+      <i class="fa-solid fa-house fa-lg" style="margin-right: 12px; color: #0e0f11;"></i>Dashboard
+    </a>
+    <a href="{% url 'userRegistration' %}">
+      <i class="fa-solid fa-user-plus fa-lg" style="margin-right: 12px; color: #0e0f11;"></i>Register Users
+    </a>
+    <a href="{% url 'users' %}">
+      <i class="fa-solid fa-users-rectangle fa-lg" style="margin-right: 12px; color: #0e0f11;"></i>Users' Details
+    </a>
+    <a href="{% url 'send_email' %}">
+      <i class="fa-solid fa-envelope fa-lg" style="margin-right: 12px; color: #0e0f11;"></i>Send emails
+    </a>
+
+    <a href="{% url 'adminSettings' %}">
+      <i class="fa-solid fa-gear fa-lg" style="margin-right: 12px; color: #0e0f11;"></i>Settings
+    </a>
+
+    <div class="logout" style="position: absolute; bottom: 30px;">
+      <a href="{% url 'userLogout' %}" id="logout">
+        <i class="fa-solid fa-right-from-bracket fa-xl" style="margin-right: 12px; color: #0e0f11;"></i>Logout
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function() {
+  const currentPath = window.location.pathname;
+  const sidebarLinks = document.querySelectorAll('.Sidebar a');
+
+  sidebarLinks.forEach(link => {
+    if (link.getAttribute("href") === currentPath) {
+      link.classList.add('active');
+    }
+  });
+
+  // Set adminDashboard as default active link if no other link is active
+  const adminDashboardLink = document.querySelector('.Sidebar a.adminDashboard');
+  const activeLinks = document.querySelectorAll('.Sidebar a.active');
+  if (activeLinks.length === 0 && adminDashboardLink) {
+    adminDashboardLink.classList.add('active');
+  }
+});
+
+
+</script>
